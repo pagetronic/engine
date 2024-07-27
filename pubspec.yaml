@@ -1,0 +1,42 @@
+name: engine
+description: "HubD engine"
+version: 0.0.1
+publish_to: 'none'
+
+
+
+environment:
+  sdk: '>=3.2.3 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  path: any
+  path_provider: any
+  flutter_localizations:
+    sdk: flutter
+  encrypt: ^5.0.3
+  yaml: any
+  intl: any
+  oauth2: any
+  http: any
+  html: any
+  uuid: any
+  shared_preferences: any
+  web_socket_channel: any
+  image_picker: any
+  image_picker_for_web: any
+  adaptive_theme: any
+  html_unescape: any
+  linked_scroll_controller: any
+  url_launcher: any
+  vector_math: any
+
+dev_dependencies:
+  flutter_lints: any
+
+flutter:
+  assets:
+    - assets/oauth/
+    - assets/images/

@@ -1,0 +1,12 @@
+.dart_tool
+build
+.flutter-plugins
+.flutter-plugins-dependencies
+.metadata
+analysis_options.yaml
+/base_fr.arb
+base_localizations.dart
+base_localizations_en.dart
+base_localizations_es.dart
+base_localizations_fr.dart
+pubspec.lock

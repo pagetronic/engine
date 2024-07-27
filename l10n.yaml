@@ -1,0 +1,5 @@
+arb-dir: lib/lng
+template-arb-file: base_fr.arb
+untranslated-messages-file: base_fr.arb
+output-localization-file: base_localizations.dart
+synthetic-package: false
