@@ -11,3 +11,4 @@ base_localizations_en.dart
 base_localizations_es.dart
 base_localizations_fr.dart
 pubspec.lock
+*.iml
