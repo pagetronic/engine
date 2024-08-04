@@ -52,6 +52,7 @@ class ThreadsViewState extends State<ThreadsView> {
         getView: (context, item, index) {
           return PostsViewItem(
             clickable: true,
+            breadcrumb: true,
             editActions: [
               if (Users.isAdmin) ...[ModeTextEdit.question, ModeTextEdit.rewrite],
               ModeTextEdit.title
