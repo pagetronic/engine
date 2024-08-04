@@ -196,7 +196,8 @@ mixin ThreadViewer<T extends StatefulWidget> on BaseRoute<T> {
             PageChooser.choose(context, initial: thread.value?['title']).then(
               (parent) {
                 if (parent != null) {
-                  Api.post("/threads", Json({'action': 'post', 'id': thread.value!.id, 'parent': parent})).then((rez) {
+                  Api.post("/threads", Json({'action': 'post', 'id': thread.value!.id, 'parent': "Pages/$parent"}))
+                      .then((rez) {
                     if (rez != null) {
                       thread.value?.addAll(rez['post']);
                       reload();
