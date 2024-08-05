@@ -484,7 +484,7 @@ class _SortableTabBarState extends State<SortableTabBar> {
 
   @override
   void dispose() {
-    _indicatorPainter!.dispose();
+    _indicatorPainter?.dispose();
     if (_controllerIsValid) {
       _controller!.animation!.removeListener(_handleTabControllerAnimationTick);
       _controller!.removeListener(_handleTabControllerTick);
@@ -658,7 +658,7 @@ class _SortableTabBarState extends State<SortableTabBar> {
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterialLocalizations(context));
     assert(() {
-      if (_controller!.length != widget.tabs.length) {
+      if (_controller?.length != widget.tabs.length) {
         throw FlutterError(
           "Controller's length property (${_controller!.length}) does not match the "
           "number of tabs (${widget.tabs.length}) present in TabBar's tabs property.",
