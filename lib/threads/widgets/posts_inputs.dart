@@ -318,16 +318,13 @@ class PostsTextInput extends StatelessWidget {
   }
 
   void aiReply(BuildContext context) {
-    Api.get(RouteSettingsSaver.routeSettings(context)!.name!).then(
-      (thread) {
-        List<String> messages = [];
-        for (Json reply in thread!['posts']['result']) {
-          messages.add(reply['text']);
-        }
-        AIUtils.replyThread(thread.id!)
-            .then((value) => textController.text = value);
-      },
-    );
+    if (textController.text.isNotEmpty) {
+      AIUtils.rewrite(textController.text, 100, 500).then((value) => textController.text = value);
+    } else {
+      Api.get(RouteSettingsSaver.routeSettings(context)!.name!).then(
+        (thread) => AIUtils.replyThread(thread!.id!).then((value) => textController.text = value),
+      );
+    }
     textController.text = "...";
   }
 
