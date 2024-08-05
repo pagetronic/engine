@@ -18,10 +18,11 @@ class AIUtils {
     return rez?['questions'] ?? [];
   }
 
-  static Future<String> reply(String question, List<String> messages, String suggest, int min, int max) async {
+  static Future<String> reply(String id, String question, List<String> messages, String suggest, int min, int max) async {
     Json action = Json();
     action['action'] = "ai";
     action['type'] = "reply";
+    action['thread'] = id;
     action['question'] = question;
     action['messages'] = messages;
     action['suggest'] = suggest;
