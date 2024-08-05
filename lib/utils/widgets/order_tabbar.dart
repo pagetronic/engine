@@ -656,16 +656,7 @@ class _SortableTabBarState extends State<SortableTabBar> {
 
   @override
   Widget build(BuildContext context) {
-    assert(debugCheckHasMaterialLocalizations(context));
-    assert(() {
-      if (_controller?.length != widget.tabs.length) {
-        throw FlutterError(
-          "Controller's length property (${_controller!.length}) does not match the "
-          "number of tabs (${widget.tabs.length}) present in TabBar's tabs property.",
-        );
-      }
-      return true;
-    }());
+
     final MaterialLocalizations localizations = MaterialLocalizations.of(context);
     if (_controller!.length == 0) {
       return Container(
