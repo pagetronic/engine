@@ -324,8 +324,7 @@ class PostsTextInput extends StatelessWidget {
         for (Json reply in thread!['posts']['result']) {
           messages.add(reply['text']);
         }
-        AIUtils.reply(thread.id!,
-                (thread['title'] ?? "") + " " + (thread['text'] ?? ""), messages, textController.value.text, 100, 500)
+        AIUtils.replyThread(thread.id!)
             .then((value) => textController.text = value);
       },
     );
