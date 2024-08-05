@@ -15,9 +15,11 @@ class Engine extends StatelessWidget {
   final ColorScheme lightColorScheme;
   final ColorScheme darkColorScheme;
   final Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates;
+  final String title;
 
   const Engine({
     super.key,
+    this.title = "",
     required this.routeMaker,
     required this.lightColorScheme,
     required this.darkColorScheme,
@@ -43,7 +45,7 @@ class Engine extends StatelessWidget {
           brightness: Brightness.dark, useMaterial3: true, colorScheme: darkColorScheme, tabBarTheme: tabBarTheme),
       initial: AdaptiveThemeMode.light,
       builder: (theme, darkTheme) => MaterialApp(
-        title: "agroneo",
+        title: title,
         onGenerateInitialRoutes: (initialRoute) => [routeMaker(RouteSettings(name: initialRoute))],
         onGenerateRoute: (settings) => routeMaker(settings),
         debugShowCheckedModeBanner: false,
