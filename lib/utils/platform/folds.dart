@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:engine/api/network.dart';
+import 'package:engine/blobs/images.dart';
+import 'package:engine/profile/avatar.dart';
 import 'package:engine/utils/loading.dart';
 import 'package:engine/utils/platform/load.dart';
 import 'package:engine/utils/sizer.dart';
@@ -66,7 +68,17 @@ class Fold extends StatelessWidget {
                     automaticallyImplyLeading: isSmall || (Navigator.of(context).canPop() && menus == null),
                     tabs: tabStore,
                     title: title,
-                    actionsButtons: actionButtons,
+                    actionsButtons: [
+                      if (menus == null) ...[
+                        Container(
+                          clipBehavior: Clip.antiAlias,
+                          decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20))),
+                          child: UserSwitcher(format: ImageFormat.png24x24),
+                        ),
+                        const SizedBox(width: 5)
+                      ],
+                      ...actionButtons
+                    ],
                     actionsMenu: [
                       for (ActionMenuItem menu in actionsMenu) menu,
                     ],
