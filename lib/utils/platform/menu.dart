@@ -1,7 +1,7 @@
 import 'package:engine/api/utils/json.dart';
 import 'package:engine/blobs/images.dart';
 import 'package:engine/profile/auth/users.dart';
-import 'package:engine/utils/defer.dart';
+import 'package:engine/profile/avatar.dart';
 import 'package:flutter/material.dart';
 
 class GlobalMenu {
@@ -317,78 +317,6 @@ class GlobalMenu {
         },
       );
     }
-  }
-}
-
-class UserSwitcher extends StatelessWidget {
-  final Deferrer deferrer = Deferrer(700);
-  final PageController controller = PageController(initialPage: 0, keepPage: false);
-
-  UserSwitcher({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    if (UsersStore.user == null) {
-      return const SizedBox.shrink();
-    }
-    List<dynamic> allUsers = UsersStore.allUsers;
-    int length = allUsers.length;
-    if (length == 1) {
-      Json? user = UsersStore.user?.data;
-      return user!['avatar'] != null
-          ? ImageWidget.src(user['avatar'],
-              format: ImageFormat.png60x60,
-              errorBuilder: (context, error, stackTrace) =>
-                  const Icon(Icons.account_circle_outlined, size: 60, color: Colors.white))
-          : const Icon(Icons.account_circle_outlined, size: 60, color: Colors.white);
-    }
-
-    return SizedBox(
-      width: 60,
-      height: 60,
-      child: PageView.builder(
-        itemCount: length,
-        scrollDirection: Axis.vertical,
-        pageSnapping: true,
-        onPageChanged: (index) {
-          deferrer.defer(
-            () {
-              if (allUsers[index] is User) {
-                UsersStore.setCurrentUser(allUsers[index]).then(
-                  (value) {
-                    try {
-                      controller.jumpTo(0);
-                    } catch (_) {}
-                  },
-                );
-              } else {
-                UsersStore.switchUser(allUsers[index].id).then(
-                  (value) {
-                    try {
-                      controller.jumpTo(0);
-                    } catch (_) {}
-                  },
-                );
-              }
-            },
-          );
-        },
-        controller: controller,
-        itemBuilder: (context, index) {
-          if (index >= length) {
-            return null;
-          }
-          dynamic user_ = allUsers[index];
-          Json user = user_ is User ? user_.data : user_;
-          return user['avatar'] != null
-              ? ImageWidget.src(user['avatar'],
-                  format: ImageFormat.png60x60,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const Icon(Icons.account_circle_outlined, size: 60, color: Colors.white))
-              : const Icon(Icons.account_circle_outlined, size: 60, color: Colors.white);
-        },
-      ),
-    );
   }
 }
 

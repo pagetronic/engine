@@ -58,11 +58,11 @@ class UsersStore {
   static List<dynamic> get allUsers {
     List<dynamic> users_ = [];
     for (User user in users) {
-      users_.add(user);
       if (user.data['original'] != null) {
         List<Json> original = user.data['original'];
         users_.add(original[0]..remove("id"));
       }
+      users_.add(user);
       if (user.data['children'] != null) {
         users_.addAll(user.data['children']);
       }
@@ -230,5 +230,3 @@ class User {
 
   String get id => data.id!;
 }
-
-
