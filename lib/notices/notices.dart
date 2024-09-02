@@ -1,14 +1,25 @@
+import 'dart:async';
+
 import 'package:engine/api/api.dart';
+import 'package:engine/api/socket/socket_master.dart';
 import 'package:engine/lng/language.dart';
 import 'package:engine/profile/auth/users.dart';
 import 'package:engine/utils/base.dart';
+import 'package:engine/utils/fx.dart';
 import 'package:engine/utils/lists/lists_api.dart';
 import 'package:engine/utils/platform/action.dart';
 import 'package:engine/utils/routes.dart';
 import 'package:flutter/material.dart';
 
-class NoticesButton extends StatelessWidget {
+class NoticesButton extends StatefulWidget {
   const NoticesButton({super.key});
+
+  @override
+  NoticesButtonState createState() => NoticesButtonState();
+}
+
+class NoticesButtonState extends State<NoticesButton> with ChannelFollowable {
+  final ValueNotifier<String?> notices = ValueNotifier(null);
 
   @override
   Widget build(BuildContext context) {
@@ -16,31 +27,37 @@ class NoticesButton extends StatelessWidget {
       message: Language.of(context).notifications,
       child: ValueListenableBuilder(
         valueListenable: UsersStore.currentUser,
-        builder: (context, user, child) => IconButton(
-          onPressed: () {
-            if (user == null) {
-              Navigator.pushNamed(context, "/profile");
-              return;
-            }
-            NoticesView.view(context);
-          },
-          icon: getIcon(user?.data['notices']),
-        ),
+        builder: (context, user, child) {
+          notices.value = user?.data['notices'];
+          return ValueListenableBuilder(
+            valueListenable: notices,
+            builder: (context, notices, child) => IconButton(
+              onPressed: () {
+                if (user == null) {
+                  Navigator.pushNamed(context, "/profile");
+                  return;
+                }
+                NoticesView.view(context);
+              },
+              icon: getIcon(notices),
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget getIcon(int? notices) {
+  Widget getIcon(String? notices) {
     if (notices == null) {
       return const Icon(Icons.notifications_off_outlined);
     }
 
-    if (notices > 0) {
+    if (notices != "0") {
       return Row(children: [
         const Icon(Icons.notifications_active),
         const SizedBox(width: 3),
         Text(
-          UsersStore.user!.data['notices'].toString(),
+          notices,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -50,6 +67,25 @@ class NoticesButton extends StatelessWidget {
       ]);
     }
     return const Icon(Icons.notifications_none);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    follow("user").then((stream) {
+      stream.listen((user) {
+        if (user['action'] == "notices") {
+          notices.value = user["notices"];
+          Fx.log(user["notices"]);
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    unfollowAll();
+    super.dispose();
   }
 }
 
