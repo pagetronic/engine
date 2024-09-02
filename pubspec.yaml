@@ -33,6 +33,8 @@ dependencies:
   url_launcher: any
   vector_math: any
 
+  material_symbols_icons: any
+
 dev_dependencies:
   flutter_lints: any
 

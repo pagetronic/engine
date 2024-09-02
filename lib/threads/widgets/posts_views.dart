@@ -1,6 +1,7 @@
 import 'package:engine/api/api.dart';
 import 'package:engine/blobs/images.dart';
 import 'package:engine/lng/language.dart';
+import 'package:engine/notices/notices.dart';
 import 'package:engine/profile/auth/users.dart';
 import 'package:engine/profile/auth/users_utils.dart';
 import 'package:engine/profile/avatar.dart';
@@ -8,6 +9,7 @@ import 'package:engine/threads/utils/threads_utils.dart';
 import 'package:engine/threads/widgets/posts_images.dart';
 import 'package:engine/threads/widgets/posts_inputs.dart';
 import 'package:engine/utils/actions.dart';
+import 'package:engine/utils/buttons.dart';
 import 'package:engine/utils/fx.dart';
 import 'package:engine/utils/main.dart';
 import 'package:engine/utils/routes.dart';
@@ -24,14 +26,18 @@ class PostsViewItem extends StatelessWidget {
   final bool breadcrumb;
   final bool clickable;
   final String? heroTag;
+  final String? followable;
 
-  const PostsViewItem(this.post,
-      {super.key,
-      this.onUpdate,
-      this.editActions = const [],
-      this.breadcrumb = false,
-      this.heroTag,
-      this.clickable = false});
+  const PostsViewItem(
+    this.post, {
+    super.key,
+    this.onUpdate,
+    this.editActions = const [],
+    this.breadcrumb = false,
+    this.heroTag,
+    this.clickable = false,
+    this.followable,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +211,7 @@ class PostsViewItem extends StatelessWidget {
                                                                       ((post['user'] != null &&
                                                                               post['user'].id == user.id) ||
                                                                           (user['admin'] ?? false))) ...[
-                                                                    PostsViewButton(
+                                                                    ButtonIcon(
                                                                       icon: deleted
                                                                           ? Icons.restore
                                                                           : Icons.delete_forever,
@@ -245,7 +251,7 @@ class PostsViewItem extends StatelessWidget {
                                                                         );
                                                                       },
                                                                     ),
-                                                                    PostsViewButton(
+                                                                    ButtonIcon(
                                                                       icon: Icons.edit_note,
                                                                       onPressed: () {
                                                                         setState(() {
@@ -257,14 +263,16 @@ class PostsViewItem extends StatelessWidget {
                                                                 ],
                                                               ),
                                                               Wrap(
-                                                                spacing: 20,
-                                                                runSpacing: 10,
+                                                                spacing: 5,
+                                                                runSpacing: 5,
                                                                 children: [
-                                                                  PostsViewButton(
+                                                                  ButtonIcon(
                                                                     onPressed: onTap,
                                                                     icon: Icons.question_answer_outlined,
                                                                     text: (post['replies'] ?? 0).toString(),
                                                                   ),
+                                                                  if (followable != null)
+                                                                    FollowButton(followable!),
                                                                   LikeButton(
                                                                     type: 'post',
                                                                     onUpdate: onUpdate,
@@ -422,45 +430,7 @@ class PostsViewItem extends StatelessWidget {
   }
 }
 
-class PostsViewButton extends StatelessWidget {
-  final VoidCallback? onPressed;
-  final IconData icon;
-  final String? text;
-  final ValueNotifier<bool> hover = ValueNotifier(false);
 
-  PostsViewButton({super.key, this.onPressed, required this.icon, this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onPressed,
-      onHover: (value) => hover.value = value,
-      child: Padding(
-        padding: const EdgeInsets.all(5),
-        child: ValueListenableBuilder(
-          valueListenable: hover,
-          builder: (context, hover, child) => AnimatedOpacity(
-            duration: const Duration(milliseconds: 200),
-            opacity: hover ? 1 : 0.5,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon, size: 16),
-                if (text != null) ...[
-                  const SizedBox(width: 2),
-                  Text(
-                    text!,
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
-                  )
-                ]
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class LikeButton extends StatelessWidget {
   final ValueNotifier<bool> loading = ValueNotifier(false);
@@ -483,7 +453,7 @@ class LikeButton extends StatelessWidget {
       valueListenable: loading,
       builder: (context, loading, child) => Opacity(
         opacity: loading ? 0.5 : 1,
-        child: PostsViewButton(
+        child: ButtonIcon(
           onPressed: loading
               ? null
               : () {

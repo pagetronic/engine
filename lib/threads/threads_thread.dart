@@ -114,6 +114,7 @@ mixin ThreadViewer<T extends StatefulWidget> on BaseRoute<T> {
                   ),
                 PostsViewItem(
                   breadcrumb: true,
+                  followable:"posts/${thread.id}",
                   editActions: [
                     if (Users.isAdmin) ...[ModeTextEdit.question, ModeTextEdit.rewrite],
                     ModeTextEdit.title
