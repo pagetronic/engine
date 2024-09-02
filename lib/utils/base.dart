@@ -14,7 +14,8 @@ import 'package:engine/utils/widgets/dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-abstract class BaseRoute<T extends StatefulWidget> extends State<T> with TickerProviderStateMixin<T>, TabStore<T> {
+abstract class BaseRoute<T extends StatefulWidget> extends State<T>
+    with TickerProviderStateMixin<T>, TabStore<T>, ChannelFollowable {
   final LoadingModal loadingModal = LoadingModal();
   final DialogModal dialogModal = DialogModal();
   final GlobalKey key = GlobalKey();
@@ -158,7 +159,7 @@ abstract class BaseRoute<T extends StatefulWidget> extends State<T> with TickerP
 
   @override
   void initState() {
-    MasterSocket.follow("user").then((stream) => stream.listen((event) {
+    MasterSocket.follow("user").then((stream) => stream.stream.listen((event) {
           if (event['action'] == 'logout') {
             logout();
           }
@@ -171,5 +172,11 @@ abstract class BaseRoute<T extends StatefulWidget> extends State<T> with TickerP
       return context.state as BaseRoute;
     }
     return context.findAncestorStateOfType<BaseRoute>();
+  }
+
+  @override
+  void dispose() {
+    unfollowAll();
+    super.dispose();
   }
 }

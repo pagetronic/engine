@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:engine/api/api.dart';
 import 'package:engine/api/html/html.dart';
-import 'package:engine/api/socket/socket_master.dart';
 import 'package:engine/api/utils/html.dart';
 import 'package:engine/lng/language.dart';
 import 'package:engine/pages/pages_chooser.dart';
@@ -60,7 +59,8 @@ mixin ThreadViewer<T extends StatefulWidget> on BaseRoute<T> {
       thread.value = await get();
     }
     if (thread.value?.id != null) {
-      (await MasterSocket.follow("posts/${thread.value?.id}")).listen((event) {
+      Stream<Json> stream = await follow("posts/${thread.value?.id}");
+      stream.listen((event) {
         list?.update(event);
       });
     }
@@ -78,7 +78,7 @@ mixin ThreadViewer<T extends StatefulWidget> on BaseRoute<T> {
     AppLocalizations locale = Language.of(context);
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, _) {
         if (!didPop) {
           Navigator.pop(context, thread.value);
         }
@@ -210,12 +210,6 @@ mixin ThreadViewer<T extends StatefulWidget> on BaseRoute<T> {
         ),
       ]
     ];
-  }
-
-  @override
-  void dispose() {
-    MasterSocket.unfollow("posts/${thread.value?.id}");
-    super.dispose();
   }
 
   @override

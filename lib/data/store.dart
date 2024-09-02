@@ -476,12 +476,3 @@ abstract class Indexable {
   String? parent;
   States? state;
 }
-
-extension ListUtilsData<T> on List<T> {
-  T? firstWhereOrNull(bool Function(T element) test) {
-    for (T element in this) {
-      if (test(element)) return element;
-    }
-    return null;
-  }
-}
