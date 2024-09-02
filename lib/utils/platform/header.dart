@@ -1,4 +1,5 @@
 import 'package:engine/lng/language.dart';
+import 'package:engine/utils/notices.dart';
 import 'package:engine/utils/platform/load.dart';
 import 'package:engine/utils/tabs.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,9 @@ class StateHeader extends State<Header> {
         onPressed: () => Navigator.of(context).pushNamed(widget.search!),
         icon: const Icon(Icons.search),
       ));
+    }
+    if (!NoticesView.isNoticesView(context)) {
+      actions.add(const NoticesButton());
     }
 
     if ((widget.actionsMenu ?? []).isNotEmpty) {

@@ -272,6 +272,7 @@
       }
     }
   },
+  "notifications": "Notifications",
   "gallery": "Galerie",
   "gallery_image": "Image",
   "gallery_choose": "Choisir une photo",
