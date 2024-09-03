@@ -100,9 +100,11 @@ class NavigationHistoryObserver extends NavigatorObserver {
 
 class GlobalInit {
   static Future<void> init(Color systemUIOverlay) async {
+
     WidgetsFlutterBinding.ensureInitialized();
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(systemNavigationBarColor: systemUIOverlay));
+
     SettingsStore.init();
     await UsersStore.init();
     if (UsersStore.user == null) {

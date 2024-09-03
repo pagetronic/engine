@@ -35,6 +35,9 @@ dependencies:
 
   material_symbols_icons: any
 
+  desktop_notifications: any
+  firebase_messaging: any
+
 dev_dependencies:
   flutter_lints: any
 

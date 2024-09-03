@@ -13,6 +13,7 @@ import 'package:engine/utils/widgets/breadcrumb.dart';
 import 'package:engine/utils/widgets/dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 abstract class BaseRoute<T extends StatefulWidget> extends State<T>
     with TickerProviderStateMixin<T>, TabStore<T>, ChannelFollowable {
@@ -23,6 +24,8 @@ abstract class BaseRoute<T extends StatefulWidget> extends State<T>
   bool isStats = false;
   bool showHeader = true;
   Widget? body;
+
+  final MethodChannel platform = const MethodChannel("base");
 
   @mustCallSuper
   Future<void> beforeLoad(AppLocalizations locale) async {
@@ -159,12 +162,22 @@ abstract class BaseRoute<T extends StatefulWidget> extends State<T>
 
   @override
   void initState() {
+    platform.setMethodCallHandler(nativeMethodCallHandler);
     MasterSocket.follow("user").then((stream) => stream.stream.listen((event) {
           if (event['action'] == 'logout') {
             logout();
           }
         }));
     super.initState();
+  }
+
+  Future<dynamic> nativeMethodCallHandler(MethodCall methodCall) async {
+    switch (methodCall.method) {
+      case "pushNamed":
+        Navigator.of(context).pushNamed(methodCall.arguments as String);
+        break;
+      default:
+    }
   }
 
   static BaseRoute? maybeOf(BuildContext context) {

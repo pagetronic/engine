@@ -1,6 +1,7 @@
+
+
 class NoticesUtils {
-  static bool webpushCapable() {
+  static bool webPushCapable() {
     return false;
   }
-  
 }
