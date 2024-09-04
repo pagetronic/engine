@@ -15,9 +15,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+const MethodChannel platformBase = MethodChannel("base");
+
 abstract class BaseRoute<T extends StatefulWidget> extends State<T>
     with TickerProviderStateMixin<T>, TabStore<T>, ChannelFollowable {
-  final MethodChannel platformBase = const MethodChannel("base");
   final LoadingModal loadingModal = LoadingModal();
   final DialogModal dialogModal = DialogModal();
   final GlobalKey key = GlobalKey();
