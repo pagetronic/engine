@@ -27,23 +27,26 @@ class NoticesButtonState extends State<NoticesButton> with ChannelFollowable {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-      message: Language.of(context).notifications,
+      message: Language
+          .of(context)
+          .notifications,
       child: ValueListenableBuilder(
         valueListenable: UsersStore.currentUser,
         builder: (context, user, child) {
           notices.value = user?.data['notices'];
           return ValueListenableBuilder(
             valueListenable: notices,
-            builder: (context, notices, child) => IconButton(
-              onPressed: () {
-                if (user == null) {
-                  Navigator.pushNamed(context, "/profile");
-                  return;
-                }
-                NoticesView.view(context);
-              },
-              icon: getIcon(notices),
-            ),
+            builder: (context, notices, child) =>
+                IconButton(
+                  onPressed: () {
+                    if (user == null) {
+                      Navigator.pushNamed(context, "/profile");
+                      return;
+                    }
+                    NoticesView.view(context);
+                  },
+                  icon: getIcon(notices),
+                ),
           );
         },
       ),
@@ -137,20 +140,22 @@ class NoticesViewState extends BaseRoute<NoticesView> {
 
   @override
   String? getTitle() {
-    return Language.of(context).notifications;
+    return Language
+        .of(context)
+        .notifications;
   }
 }
 
 class FollowButton extends StatelessWidget {
   final String channel;
   final double? size;
-  static const webPushNative = MethodChannel('webPush');
+  static const osNotifications = MethodChannel('osNotifications');
 
   const FollowButton(this.channel, {super.key, this.size});
 
   @override
   Widget build(BuildContext context) {
-    Future<bool> webPushCapable = hasWebPushFunctionality();
+    Future<bool> webPushCapable = hasOsNotifications();
     return FutureBuilder(
       future: Api.post("/notices", Json({'action': 'get', 'channel': channel})),
       builder: (context, snapshot) {
@@ -180,25 +185,25 @@ class FollowButton extends StatelessWidget {
                       details.globalPosition.dy,
                     ),
                     items: [
-                      if (webPushCapable.data! && snapshot.data?['type'] != 'webpush')
+                      if (webPushCapable.data! && snapshot.data?['type'] != 'os')
                         PopupMenuItem<String>(
-                          value: "webpush",
+                          value: "os",
                           child: Row(
                             children: [
                               const Icon(Symbols.wifi_notification),
                               const SizedBox(width: 5),
-                              Text(locale.notifications_webpush)
+                              Text(locale.notifications_os)
                             ],
                           ),
                         ),
                       if (snapshot.data?['type'] == null)
                         PopupMenuItem<String>(
-                          value: "normal",
+                          value: "app",
                           child: Row(
                             children: [
                               const Icon(Symbols.notifications),
                               const SizedBox(width: 5),
-                              Text(locale.notifications_inapp)
+                              Text(locale.notifications_app)
                             ],
                           ),
                         ),
@@ -215,11 +220,11 @@ class FollowButton extends StatelessWidget {
                         )
                     ]).then(register);
               },
-              icon: snapshot.data?['type'] == 'webpush'
+              icon: snapshot.data?['type'] == 'os'
                   ? Symbols.wifi_notification
-                  : snapshot.data?['type'] == 'normal'
-                      ? Symbols.notifications
-                      : Symbols.notifications_off,
+                  : snapshot.data?['type'] == 'app'
+                  ? Symbols.notifications
+                  : Symbols.notifications_off,
             );
           },
         );
@@ -227,25 +232,19 @@ class FollowButton extends StatelessWidget {
     );
   }
 
-  Future<bool> hasWebPushFunctionality() async {
+  Future<bool> hasOsNotifications() async {
     try {
-      bool? hasWebPush = await webPushNative.invokeMethod<bool?>("hasWebPushFunctionality");
+      bool? hasWebPush = await osNotifications.invokeMethod<bool?>("hasOsNotifications");
       return hasWebPush ?? false;
     } catch (_) {
       return false;
     }
   }
 
-  void register(String? value) {
-    switch (value) {
-      case 'webpush':
-        registerWebPush();
-        break;
+  Future<void> register(String? value) async {
+    if(value!=null) {
+      Json? rez = await Api.post("/notices", Json({"action": 'follow', 'channel': channel, 'register': value}));
+      Fx.log(rez);
     }
-  }
-
-  Future<void> registerWebPush() async {
-    await webPushNative.invokeMethod<bool?>("registerWebPush");
-  
   }
 }
