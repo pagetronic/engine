@@ -171,7 +171,7 @@ class FollowButton extends StatelessWidget {
               size: size,
               onTapDown: (details) {
                 AppLocalizations locale = Language.of(context);
-                showMenu<void>(
+                showMenu<String>(
                     context: context,
                     position: RelativeRect.fromLTRB(
                       details.globalPosition.dx,
@@ -213,9 +213,7 @@ class FollowButton extends StatelessWidget {
                             ],
                           ),
                         )
-                    ]).then(
-                  (value) {},
-                );
+                    ]).then(register);
               },
               icon: snapshot.data?['type'] == 'webpush'
                   ? Symbols.wifi_notification
@@ -236,5 +234,18 @@ class FollowButton extends StatelessWidget {
     } catch (_) {
       return false;
     }
+  }
+
+  void register(String? value) {
+    switch (value) {
+      case 'webpush':
+        registerWebPush();
+        break;
+    }
+  }
+
+  Future<void> registerWebPush() async {
+    await webPushNative.invokeMethod<bool?>("registerWebPush");
+  
   }
 }
