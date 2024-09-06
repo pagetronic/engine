@@ -19,7 +19,7 @@ class FunctionMethodChannel extends MethodChannel {
   Future<dynamic> nativeMethodCallHandler(MethodCall methodCall) async {
     switch (methodCall.method) {
       case "getNotices":
-        return NoticesUtils.getNativeNotices(methodCall.arguments);
+        return await NoticesUtils.getNativeNotices(methodCall.arguments);
 
       default:
     }
