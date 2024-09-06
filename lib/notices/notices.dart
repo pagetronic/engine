@@ -27,26 +27,23 @@ class NoticesButtonState extends State<NoticesButton> with ChannelFollowable {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-      message: Language
-          .of(context)
-          .notifications,
+      message: Language.of(context).notifications,
       child: ValueListenableBuilder(
         valueListenable: UsersStore.currentUser,
         builder: (context, user, child) {
           notices.value = user?.data['notices'];
           return ValueListenableBuilder(
             valueListenable: notices,
-            builder: (context, notices, child) =>
-                IconButton(
-                  onPressed: () {
-                    if (user == null) {
-                      Navigator.pushNamed(context, "/profile");
-                      return;
-                    }
-                    NoticesView.view(context);
-                  },
-                  icon: getIcon(notices),
-                ),
+            builder: (context, notices, child) => IconButton(
+              onPressed: () {
+                if (user == null) {
+                  Navigator.pushNamed(context, "/profile");
+                  return;
+                }
+                NoticesView.view(context);
+              },
+              icon: getIcon(notices),
+            ),
           );
         },
       ),
@@ -140,9 +137,7 @@ class NoticesViewState extends BaseRoute<NoticesView> {
 
   @override
   String? getTitle() {
-    return Language
-        .of(context)
-        .notifications;
+    return Language.of(context).notifications;
   }
 }
 
@@ -155,15 +150,21 @@ class FollowButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future<bool> webPushCapable = hasOsNotifications();
+    if (UsersStore.user == null) {
+      return const SizedBox.shrink();
+    }
+
+    Future<bool> hasOsNotifications = this.hasOsNotifications();
+    Future<String?> control = this.control();
+
     return FutureBuilder(
-      future: Api.post("/notices", Json({'action': 'get', 'channel': channel})),
-      builder: (context, snapshot) {
+      future: hasOsNotifications,
+      builder: (context, hasOsNotifications) {
         return FutureBuilder(
-          future: webPushCapable,
-          builder: (context, webPushCapable) {
-            if (snapshot.connectionState != ConnectionState.done ||
-                webPushCapable.connectionState != ConnectionState.done) {
+          future: control,
+          builder: (context, snapshotControl) {
+            if (snapshotControl.connectionState != ConnectionState.done ||
+                hasOsNotifications.connectionState != ConnectionState.done) {
               return Opacity(
                   opacity: 0.3,
                   child: ButtonIcon(
@@ -172,59 +173,77 @@ class FollowButton extends StatelessWidget {
                   ));
             }
 
-            return ButtonIcon(
-              size: size,
-              onTapDown: (details) {
-                AppLocalizations locale = Language.of(context);
-                showMenu<String>(
-                    context: context,
-                    position: RelativeRect.fromLTRB(
-                      details.globalPosition.dx,
-                      details.globalPosition.dy,
-                      details.globalPosition.dx,
-                      details.globalPosition.dy,
-                    ),
-                    items: [
-                      if (webPushCapable.data! && snapshot.data?['type'] != 'os')
-                        PopupMenuItem<String>(
-                          value: "os",
-                          child: Row(
-                            children: [
-                              const Icon(Symbols.wifi_notification),
-                              const SizedBox(width: 5),
-                              Text(locale.notifications_os)
-                            ],
-                          ),
+            bool capable = hasOsNotifications.data ?? false;
+            String? type = snapshotControl.data;
+            return StatefulBuilder(
+              builder: (context, setState) {
+                return ButtonIcon(
+                  size: size,
+                  onTapDown: (details) {
+                    AppLocalizations locale = Language.of(context);
+                    showMenu<String>(
+                        context: context,
+                        position: RelativeRect.fromLTRB(
+                          details.globalPosition.dx,
+                          details.globalPosition.dy,
+                          details.globalPosition.dx,
+                          details.globalPosition.dy,
                         ),
-                      if (snapshot.data?['type'] == null)
-                        PopupMenuItem<String>(
-                          value: "app",
-                          child: Row(
-                            children: [
-                              const Icon(Symbols.notifications),
-                              const SizedBox(width: 5),
-                              Text(locale.notifications_app)
-                            ],
-                          ),
-                        ),
-                      if (snapshot.data?['type'] != null)
-                        PopupMenuItem<String>(
-                          value: "disable",
-                          child: Row(
-                            children: [
-                              const Icon(Symbols.notifications_off),
-                              const SizedBox(width: 5),
-                              Text(locale.notifications_off)
-                            ],
-                          ),
-                        )
-                    ]).then(register);
+                        items: [
+                          if (capable && type != 'os')
+                            PopupMenuItem<String>(
+                              value: "os",
+                              child: Row(
+                                children: [
+                                  const Icon(Symbols.wifi_notification),
+                                  const SizedBox(width: 5),
+                                  Text(locale.notifications_os)
+                                ],
+                              ),
+                            ),
+                          if (type == 'off' || type == 'os')
+                            PopupMenuItem<String>(
+                              value: "app",
+                              child: Row(
+                                children: [
+                                  const Icon(Symbols.notifications),
+                                  const SizedBox(width: 5),
+                                  Text(locale.notifications_app)
+                                ],
+                              ),
+                            ),
+                          if (type != 'off')
+                            PopupMenuItem<String>(
+                              value: "off",
+                              child: Row(
+                                children: [
+                                  const Icon(Symbols.notifications_off),
+                                  const SizedBox(width: 5),
+                                  Text(locale.notifications_off)
+                                ],
+                              ),
+                            )
+                        ]).then(
+                      (chosen) {
+                        register(chosen).then(
+                          (_) {
+                            setState(
+                              () {
+                                type = chosen;
+                              },
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                  icon: type == 'os'
+                      ? Symbols.wifi_notification
+                      : type == 'app'
+                          ? Symbols.notifications
+                          : Symbols.notifications_off,
+                );
               },
-              icon: snapshot.data?['type'] == 'os'
-                  ? Symbols.wifi_notification
-                  : snapshot.data?['type'] == 'app'
-                  ? Symbols.notifications
-                  : Symbols.notifications_off,
             );
           },
         );
@@ -241,10 +260,14 @@ class FollowButton extends StatelessWidget {
     }
   }
 
-  Future<void> register(String? value) async {
-    if(value!=null) {
-      Json? rez = await Api.post("/notices", Json({"action": 'follow', 'channel': channel, 'register': value}));
-      Fx.log(rez);
+  Future<void> register(String? type) async {
+    if (type != null) {
+      await Api.post("/notices", Json({"action": 'subscribe', 'channel': channel, 'type': type}));
     }
+  }
+
+  Future<String?> control() async {
+    Json? control = await Api.post("/notices", Json({'action': 'control', 'channel': channel}));
+    return control?['type'] ?? 'off';
   }
 }
