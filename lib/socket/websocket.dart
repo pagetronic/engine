@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:engine/api/utils/json.dart';
 import 'package:engine/api/utils/settings.dart';
@@ -163,7 +162,7 @@ class ChannelStreamController {
     if (controllers.isEmpty) {
       MasterSocket.init().then(
         (socket) {
-          socket?.sink.add(jsonEncode({"action": "follow", "channel": channel.toString()}));
+          socket?.sink.add(Json({"action": "follow", "channel": channel}).encode());
         },
       );
     }
@@ -178,7 +177,7 @@ class ChannelStreamController {
     if (controllers.isEmpty) {
       MasterSocket.init().then(
         (socket) {
-          socket?.sink.add(jsonEncode({"action": "unfollow", "channel": channel.toString()}));
+          socket?.sink.add(Json({"action": "unfollow", "channel": channel}).encode());
         },
       );
     }

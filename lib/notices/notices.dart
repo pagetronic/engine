@@ -263,12 +263,12 @@ class FollowButton extends StatelessWidget {
 
   Future<void> register(String? type) async {
     if (type != null) {
-      await Api.post("/notices", Json({"action": 'subscribe', 'channel': channel.toString(), 'type': type}));
+      await Api.post("/notices", Json({"action": 'subscribe', 'channel': channel, 'type': type}));
     }
   }
 
   Future<String?> control() async {
-    Json? control = await Api.post("/notices", Json({'action': 'control', 'channel': channel.toString()}));
+    Json? control = await Api.post("/notices", Json({'action': 'control', 'channel': channel}));
     return control?['type'] ?? 'off';
   }
 }

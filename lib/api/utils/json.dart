@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:engine/data/states.dart';
 import 'package:engine/data/store.dart';
+import 'package:engine/socket/channels.dart';
 import 'package:engine/utils/colors.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -13,7 +14,7 @@ class Json implements Indexable {
   Json([Map<dynamic, dynamic>? map]) {
     if (map != null) {
       for (dynamic key in map.keys) {
-        data[key] = map[key];
+        data[key] = _convertValue(map[key]);
       }
     }
   }
@@ -66,6 +67,7 @@ class Json implements Indexable {
     data['state'] = state?.state;
   }
 
+  @override
   set id(String? id) {
     data['id'] = id;
   }
@@ -92,13 +94,18 @@ class Json implements Indexable {
   }
 
   void operator []=(String key, dynamic value) {
+    data[key] = _convertValue(value);
+  }
+
+  dynamic _convertValue(dynamic value) {
     if (value is DateTime) {
-      data[key] = value.toJson();
+      return value.toJson();
     } else if (value is Color) {
-      data[key] = value.toHex();
-    } else {
-      data[key] = value;
+      return value.toHex();
+    } else if (value is Channel) {
+      return value.toString();
     }
+    return value;
   }
 
   @override

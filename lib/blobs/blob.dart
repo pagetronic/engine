@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:engine/api/utils/json.dart';
@@ -22,7 +21,7 @@ class BlobStore {
           return null;
         }
 
-        channel.sink.add(jsonEncode({"type": mimeType, "size": size, "name": name}));
+        channel.sink.add(Json({"type": mimeType, "size": size, "name": name}).encode());
 
         channel.sink.add(bytes);
 
