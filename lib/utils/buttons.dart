@@ -8,8 +8,17 @@ class ButtonIcon extends StatelessWidget {
   final ValueNotifier<bool> hover = ValueNotifier(false);
   final double? size;
   final double defaultSize = 18;
+  final double? opacity;
 
-  ButtonIcon({super.key, this.onPressed, this.onTapDown, required this.icon, this.text, this.size});
+  ButtonIcon({
+    super.key,
+    this.onPressed,
+    this.onTapDown,
+    required this.icon,
+    this.text,
+    this.size,
+    this.opacity,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +32,7 @@ class ButtonIcon extends StatelessWidget {
           valueListenable: hover,
           builder: (context, hover, child) => AnimatedOpacity(
             duration: const Duration(milliseconds: 200),
-            opacity: hover ? 1 : 0.5,
+            opacity: hover ? 1 : (opacity ?? 0.5),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [

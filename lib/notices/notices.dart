@@ -178,6 +178,7 @@ class FollowButton extends StatelessWidget {
             return StatefulBuilder(
               builder: (context, setState) {
                 return ButtonIcon(
+                  opacity: type != null && type != 'off' ? 1 : null,
                   size: size,
                   onTapDown: (details) {
                     AppLocalizations locale = Language.of(context);
