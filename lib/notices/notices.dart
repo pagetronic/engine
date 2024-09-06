@@ -124,7 +124,11 @@ class NoticesViewState extends BaseRoute<NoticesView> {
   Widget getBody() {
     return ApiListView(
       request: (paging) async {
-        return Result(await Api.get("/notices", paging: paging));
+        Json? rez = await Api.get("/notices", paging: paging);
+        if (paging == null && rez?.result.firstOrNull != null) {
+          Api.post("/notices", Json({'action': 'received', 'last': rez!.result.first['date']}));
+        }
+        return Result(rez);
       },
       getView: (context, item, index) {
         return Padding(
@@ -148,7 +152,7 @@ class NoticesViewState extends BaseRoute<NoticesView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        H2(item['title'] ?? ''),
+                        H4(item['title'] ?? ''),
                         Since(isoString: item['date']),
                         Text(item['message'] ?? ''),
                       ],
