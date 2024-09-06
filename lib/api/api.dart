@@ -36,18 +36,26 @@ class Api {
     }
   }
 
-  static Future<Json?> get(String url,
-      {String? lng,
-      String? paging,
-      DateTimeRangeNullable? range,
-      String? apiBase,
-      String? session,
-      bool anonymous = false,
-      bool noXUser = false}) async {
+  static Future<Json?> get(
+    String url, {
+    Map<String, String>? parameters,
+    String? lng,
+    String? paging,
+    DateTimeRangeNullable? range,
+    String? apiBase,
+    String? session,
+    bool anonymous = false,
+    bool noXUser = false,
+  }) async {
     //await Future.delayed(Duration(seconds: 1));
     apiBase ??= await Settings.apiBase;
     url = "$apiBase$url";
 
+    if (parameters != null) {
+      for (String name in parameters.keys) {
+        url += "${url.contains("?") ? "&" : "?"}$name=${Uri.encodeComponent(parameters[name]!)}";
+      }
+    }
     if (lng != null) {
       url += "${url.contains("?") ? "&" : "?"}lng=$lng";
     }
