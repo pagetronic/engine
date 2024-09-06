@@ -6,7 +6,8 @@ import 'package:engine/data/store.dart';
 import 'package:engine/socket/channels.dart';
 import 'package:engine/utils/colors.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
+
+import '../../utils/fx.dart';
 
 class Json implements Indexable {
   final Map<String, dynamic> data = {};
@@ -185,9 +186,7 @@ class Json implements Indexable {
 }
 
 extension JsonDateTime on DateTime {
-  String toJson() {
-    return DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS+0000").format(toUtc());
-  }
+  String toJson() => Fx.dateFormatIso.format(toUtc());
 }
 
 class ValueNotifierJson extends ValueNotifier<Json?> {
