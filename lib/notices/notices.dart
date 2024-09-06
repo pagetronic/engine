@@ -125,8 +125,8 @@ class NoticesViewState extends BaseRoute<NoticesView> {
     return ApiListView(
       request: (paging) async {
         Json? rez = await Api.get("/notices", paging: paging);
-        if (paging == null && rez?.result.firstOrNull != null) {
-          Api.post("/notices", Json({'action': 'received', 'last': rez!.result.first['date']}));
+        if (rez?.result != null && rez!.result.isNotEmpty) {
+          Api.post("/notices", Json({'action': 'received', 'ids': rez.result.map((e) => e.id).toList()}));
         }
         return Result(rez);
       },
