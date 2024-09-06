@@ -154,8 +154,8 @@ class FollowButton extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    Future<bool> hasOsNotifications = this.hasOsNotifications();
-    Future<String?> control = this.control();
+    final Future<bool> hasOsNotifications = this.hasOsNotifications();
+    final Future<String?> control = this.control();
 
     return FutureBuilder(
       future: hasOsNotifications,
