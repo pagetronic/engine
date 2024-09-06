@@ -165,7 +165,7 @@ abstract class FormRoute<T extends StatefulWidget> extends BaseRoute<T> {
     }
     return PopScope(
         canPop: false,
-        onPopInvoked: (didPop) {
+        onPopInvokedWithResult: (didPop, _) {
           if (!didPop) {
             onPop();
           }
