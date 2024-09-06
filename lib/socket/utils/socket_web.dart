@@ -1,4 +1,4 @@
-import 'package:engine/api/socket/utils/socket.dart';
+import 'package:engine/socket/utils/socket.dart';
 import 'package:engine/utils/fx.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 

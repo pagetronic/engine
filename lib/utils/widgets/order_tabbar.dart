@@ -656,7 +656,6 @@ class _SortableTabBarState extends State<SortableTabBar> {
 
   @override
   Widget build(BuildContext context) {
-
     final MaterialLocalizations localizations = MaterialLocalizations.of(context);
     if (_controller!.length == 0) {
       return Container(

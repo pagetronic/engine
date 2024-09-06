@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:engine/api/api.dart';
-import 'package:engine/api/socket/socket_master.dart';
 import 'package:engine/lng/language.dart';
 import 'package:engine/profile/auth/users.dart';
+import 'package:engine/socket/channels.dart';
 import 'package:engine/utils/base.dart';
 import 'package:engine/utils/buttons.dart';
 import 'package:engine/utils/fx.dart';
@@ -75,7 +75,7 @@ class NoticesButtonState extends State<NoticesButton> with ChannelFollowable {
   @override
   void initState() {
     super.initState();
-    follow("user").then((stream) {
+    follow(Channel.simple("user")).then((stream) {
       stream.listen((user) {
         if (user['action'] == "notices") {
           notices.value = user["notices"];
@@ -142,7 +142,7 @@ class NoticesViewState extends BaseRoute<NoticesView> {
 }
 
 class FollowButton extends StatelessWidget {
-  final String channel;
+  final Channel channel;
   final double? size;
   static const osNotifications = MethodChannel('osNotifications');
 
@@ -166,7 +166,7 @@ class FollowButton extends StatelessWidget {
             if (snapshotControl.connectionState != ConnectionState.done ||
                 hasOsNotifications.connectionState != ConnectionState.done) {
               return Opacity(
-                  opacity: 0.3,
+                  opacity: 0.4,
                   child: ButtonIcon(
                     size: size,
                     icon: Symbols.notifications_paused,
@@ -207,7 +207,7 @@ class FollowButton extends StatelessWidget {
                               value: "app",
                               child: Row(
                                 children: [
-                                  const Icon(Symbols.notifications),
+                                  const Icon(Symbols.notifications_active),
                                   const SizedBox(width: 5),
                                   Text(locale.notifications_app)
                                 ],
@@ -241,7 +241,7 @@ class FollowButton extends StatelessWidget {
                   icon: type == 'os'
                       ? Symbols.wifi_notification
                       : type == 'app'
-                          ? Symbols.notifications
+                          ? Symbols.notifications_active
                           : Symbols.notifications_off,
                 );
               },
@@ -263,12 +263,12 @@ class FollowButton extends StatelessWidget {
 
   Future<void> register(String? type) async {
     if (type != null) {
-      await Api.post("/notices", Json({"action": 'subscribe', 'channel': channel, 'type': type}));
+      await Api.post("/notices", Json({"action": 'subscribe', 'channel': channel.toString(), 'type': type}));
     }
   }
 
   Future<String?> control() async {
-    Json? control = await Api.post("/notices", Json({'action': 'control', 'channel': channel}));
+    Json? control = await Api.post("/notices", Json({'action': 'control', 'channel': channel.toString()}));
     return control?['type'] ?? 'off';
   }
 }

@@ -1,4 +1,4 @@
-import 'package:engine/api/socket/utils/socket_os.dart'
+import 'package:engine/socket/utils/socket_os.dart'
     if (dart.library.html) 'package:engine/api/socket/utils/socket_web.dart' as socket;
 import 'package:web_socket_channel/web_socket_channel.dart';
 

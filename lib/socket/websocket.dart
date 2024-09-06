@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:engine/api/socket/utils/socket.dart';
 import 'package:engine/api/utils/json.dart';
 import 'package:engine/api/utils/settings.dart';
 import 'package:engine/profile/auth/users.dart';
+import 'package:engine/socket/channels.dart';
+import 'package:engine/socket/utils/socket.dart';
 import 'package:engine/utils/fx.dart';
 import 'package:uuid/uuid.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+
+export 'package:engine/socket/channels.dart';
 
 class MasterSocket {
   static Future<WebSocketChannel?>? _socket = registerSocket();
@@ -26,11 +29,11 @@ class MasterSocket {
     }
   }
 
-  static Future<StreamController<Json>> follow(String channel) async {
-    if (channels[channel] == null) {
-      channels[channel] = ChannelStreamController(channel);
+  static Future<StreamController<Json>> follow(Channel channel) async {
+    if (channels[channel.toString()] == null) {
+      channels[channel.toString()] = ChannelStreamController(channel);
     }
-    return channels[channel]!.startStream();
+    return channels[channel.toString()]!.startStream();
   }
 
   static Future<void> unfollow(StreamController<Json> controller) async {
@@ -47,7 +50,7 @@ class MasterSocket {
     if (channelStreamController != null) {
       channelStreamController.endStream(controller);
       if (channelStreamController.controllers.isEmpty) {
-        channels.remove(channelStreamController.channel);
+        channels.remove(channelStreamController.channel.toString());
       }
     }
   }
@@ -60,7 +63,7 @@ class MasterSocket {
         data['act'] = act;
         WebSocketChannel? socket = await init();
 
-        follow(act).then(
+        follow(Channel.simple(act)).then(
           (follower) {
             follower.stream.listen((resp) {
               completer.complete(resp);
@@ -145,7 +148,7 @@ class MasterSocket {
 
 class ChannelStreamController {
   final List<StreamController<Json>> controllers = [];
-  final String channel;
+  final Channel channel;
 
   ChannelStreamController(this.channel);
 
@@ -160,7 +163,7 @@ class ChannelStreamController {
     if (controllers.isEmpty) {
       MasterSocket.init().then(
         (socket) {
-          socket?.sink.add(jsonEncode({"action": "follow", "channel": channel}));
+          socket?.sink.add(jsonEncode({"action": "follow", "channel": channel.toString()}));
         },
       );
     }
@@ -175,24 +178,9 @@ class ChannelStreamController {
     if (controllers.isEmpty) {
       MasterSocket.init().then(
         (socket) {
-          socket?.sink.add(jsonEncode({"action": "unfollow", "channel": channel}));
+          socket?.sink.add(jsonEncode({"action": "unfollow", "channel": channel.toString()}));
         },
       );
-    }
-  }
-}
-
-mixin ChannelFollowable {
-  final List<StreamController<Json>> follows = [];
-  Future<Stream<Json>> follow(String channel) async {
-    StreamController<Json> streamController = await MasterSocket.follow(channel);
-    follows.add(streamController);
-    return streamController.stream;
-  }
-
-  void unfollowAll() {
-    for (StreamController<Json> follow in follows) {
-      MasterSocket.unfollow(follow);
     }
   }
 }

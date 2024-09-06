@@ -12,8 +12,8 @@ import 'package:http/http.dart' as http;
 export 'package:engine/api/utils/json.dart';
 
 class Api {
-  static Future<Json?> post(String url, Json data, {String? apiBase, String? session, bool anonymous = false,
-    bool noXUser = false}) async {
+  static Future<Json?> post(String url, Json data,
+      {String? apiBase, String? session, bool anonymous = false, bool noXUser = false}) async {
     apiBase ??= await Settings.apiBase;
 
     url = "$apiBase$url";

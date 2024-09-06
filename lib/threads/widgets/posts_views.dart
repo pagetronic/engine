@@ -5,6 +5,7 @@ import 'package:engine/notices/notices.dart';
 import 'package:engine/profile/auth/users.dart';
 import 'package:engine/profile/auth/users_utils.dart';
 import 'package:engine/profile/avatar.dart';
+import 'package:engine/socket/channels.dart';
 import 'package:engine/threads/utils/threads_utils.dart';
 import 'package:engine/threads/widgets/posts_images.dart';
 import 'package:engine/threads/widgets/posts_inputs.dart';
@@ -26,7 +27,7 @@ class PostsViewItem extends StatelessWidget {
   final bool breadcrumb;
   final bool clickable;
   final String? heroTag;
-  final String? followable;
+  final Channel? followable;
 
   const PostsViewItem(
     this.post, {
@@ -271,8 +272,7 @@ class PostsViewItem extends StatelessWidget {
                                                                     icon: Icons.question_answer_outlined,
                                                                     text: (post['replies'] ?? 0).toString(),
                                                                   ),
-                                                                  if (followable != null)
-                                                                    FollowButton(followable!),
+                                                                  if (followable != null) FollowButton(followable!),
                                                                   LikeButton(
                                                                     type: 'post',
                                                                     onUpdate: onUpdate,
@@ -429,8 +429,6 @@ class PostsViewItem extends StatelessWidget {
     return defAvatar;
   }
 }
-
-
 
 class LikeButton extends StatelessWidget {
   final ValueNotifier<bool> loading = ValueNotifier(false);

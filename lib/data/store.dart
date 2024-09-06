@@ -19,8 +19,8 @@ class Store {
 
   static List<StoreItem> _indexComposed(String collection) {
     List<StoreItem> indexComposed = [];
-    List<StoreItem> data = _indexData[collection]??[];
-    List<StoreItem> cache = _indexCache[collection]??[];
+    List<StoreItem> data = _indexData[collection] ?? [];
+    List<StoreItem> cache = _indexCache[collection] ?? [];
     for (StoreItem data in data) {
       StoreItem? cached = cache.firstWhereOrNull((element) => element.id == data.id);
       indexComposed.add(cached == null ? data : StoreItem.join(data, cached));

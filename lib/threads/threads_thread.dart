@@ -7,6 +7,7 @@ import 'package:engine/lng/language.dart';
 import 'package:engine/pages/pages_chooser.dart';
 import 'package:engine/profile/auth/users.dart';
 import 'package:engine/profile/auth/users_utils.dart';
+import 'package:engine/socket/channels.dart';
 import 'package:engine/threads/widgets/posts_inputs.dart';
 import 'package:engine/threads/widgets/posts_views.dart';
 import 'package:engine/utils/base.dart';
@@ -59,7 +60,7 @@ mixin ThreadViewer<T extends StatefulWidget> on BaseRoute<T> {
       thread.value = await get();
     }
     if (thread.value?.id != null) {
-      Stream<Json> stream = await follow("posts/${thread.value?.id}");
+      Stream<Json> stream = await follow(Channel("posts", thread.value!.id!));
       stream.listen((event) {
         list?.update(event);
       });
@@ -114,7 +115,7 @@ mixin ThreadViewer<T extends StatefulWidget> on BaseRoute<T> {
                   ),
                 PostsViewItem(
                   breadcrumb: true,
-                  followable:"posts/${thread.id}",
+                  followable: Channel("posts", thread.id!),
                   editActions: [
                     if (Users.isAdmin) ...[ModeTextEdit.question, ModeTextEdit.rewrite],
                     ModeTextEdit.title

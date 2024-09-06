@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:engine/api/socket/utils/socket.dart';
 import 'package:engine/api/utils/json.dart';
 import 'package:engine/api/utils/settings.dart';
+import 'package:engine/socket/utils/socket.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 

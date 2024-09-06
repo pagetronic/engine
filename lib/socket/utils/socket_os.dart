@@ -1,6 +1,6 @@
-import 'package:engine/api/socket/utils/socket.dart';
 import 'package:engine/api/utils/settings.dart';
 import 'package:engine/profile/auth/users.dart';
+import 'package:engine/socket/utils/socket.dart';
 import 'package:engine/utils/fx.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';

@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:engine/api/socket/socket_master.dart';
 import 'package:engine/api/stats/stats.dart';
 import 'package:engine/lng/language.dart';
 import 'package:engine/profile/auth/users.dart';
+import 'package:engine/socket/websocket.dart';
 import 'package:engine/utils/loading.dart';
 import 'package:engine/utils/platform/load.dart';
 import 'package:engine/utils/routes.dart';
@@ -163,7 +163,7 @@ abstract class BaseRoute<T extends StatefulWidget> extends State<T>
   @override
   void initState() {
     platformBase.setMethodCallHandler(nativeMethodCallHandler);
-    MasterSocket.follow("user").then((stream) => stream.stream.listen((event) {
+    MasterSocket.follow(Channel.simple("user")).then((stream) => stream.stream.listen((event) {
           if (event['action'] == 'logout') {
             logout();
           }

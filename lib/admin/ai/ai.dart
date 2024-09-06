@@ -1,5 +1,5 @@
-import 'package:engine/api/socket/socket_master.dart';
 import 'package:engine/api/utils/json.dart';
+import 'package:engine/socket/websocket.dart';
 
 class AIUtils {
   static Future<List<Json>> question(Json post, List<Json> questions) async {
