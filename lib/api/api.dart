@@ -38,7 +38,7 @@ class Api {
 
   static Future<Json?> get(
     String url, {
-    Map<String, String>? parameters,
+    Map<String, String?>? parameters,
     String? lng,
     String? paging,
     DateTimeRangeNullable? range,
@@ -53,7 +53,9 @@ class Api {
 
     if (parameters != null) {
       for (String name in parameters.keys) {
-        url += "${url.contains("?") ? "&" : "?"}$name=${Uri.encodeComponent(parameters[name]!)}";
+        if (parameters[name] != null) {
+          url += "${url.contains("?") ? "&" : "?"}$name=${Uri.encodeComponent(parameters[name]!)}";
+        }
       }
     }
     if (lng != null) {

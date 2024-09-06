@@ -5,11 +5,21 @@ class NoticesUtils {
     return false;
   }
 
-  static Future<Json?> getNotices(String? start, String? paging) async {
-    return Api.get("/notices", parameters: {if (start != null) 'start': start}, paging: paging);
+  static Future<Json?> getNotices({String? start, String? type, String? paging}) async {
+    return Api.get("/notices",
+        parameters: {
+          'start': start,
+          'type': type,
+        },
+        paging: paging);
   }
 
   static Future<String?> getNativeNotices(Map<Object?, Object?> arguments) async {
-    return (await getNotices(arguments['start'] as String, arguments['paging'] as String?))?.encode();
+    return (await getNotices(
+      type: 'os',
+      start: arguments['start'] as String?,
+      paging: arguments['paging'] as String?,
+    ))
+        ?.encode();
   }
 }

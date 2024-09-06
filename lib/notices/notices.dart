@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:engine/api/api.dart';
+import 'package:engine/blobs/images.dart';
 import 'package:engine/lng/language.dart';
 import 'package:engine/profile/auth/users.dart';
 import 'package:engine/socket/channels.dart';
@@ -10,6 +11,9 @@ import 'package:engine/utils/fx.dart';
 import 'package:engine/utils/lists/lists_api.dart';
 import 'package:engine/utils/platform/action.dart';
 import 'package:engine/utils/routes.dart';
+import 'package:engine/utils/text.dart';
+import 'package:engine/utils/url/url.dart';
+import 'package:engine/utils/widgets/date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
@@ -123,8 +127,37 @@ class NoticesViewState extends BaseRoute<NoticesView> {
         return Result(await Api.get("/notices", paging: paging));
       },
       getView: (context, item, index) {
-        return Column(
-          children: [Text("index $index"), Text(item.toString())],
+        return Padding(
+          padding: const EdgeInsets.all(10),
+          child: InkWell(
+            onTap: item['url'] == null
+                ? null
+                : () {
+                    if (item['url'].startsWith("http")) {
+                      UrlOpener.open(item['url']);
+                    } else {
+                      Navigator.of(context).pushNamed(item['url']);
+                    }
+                  },
+            child: Opacity(
+              opacity: (item['read'] ?? false) ? 0.5 : 1,
+              child: Row(
+                children: [
+                  if (item['icon'] != null) ImageWidget.src(item['icon'], format: ImageFormat.png32x32),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        H2(item['title'] ?? ''),
+                        Since(isoString: item['date']),
+                        Text(item['message'] ?? ''),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         );
       },
     );
