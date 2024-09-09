@@ -104,29 +104,35 @@ class GlobalInit {
   static Future<void> init(Color systemUIOverlay) async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    NativeCall.init();
-
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(systemNavigationBarColor: systemUIOverlay));
 
     SettingsStore.init();
+
     await UsersStore.init();
+
     if (UsersStore.user == null) {
       await Store.init();
     }
+
+    MethodsCaller.init();
+
     MasterSocket.init();
+
     FilesCache.purge();
   }
 
   static Future<void> nativeInit() async {
+
     WidgetsFlutterBinding.ensureInitialized();
 
     SettingsStore.init();
+
     await UsersStore.init();
 
     if (UsersStore.user == null) {
       await Store.init();
     }
 
-    NativeCall.init();
+    MethodsCaller.init();
   }
 }

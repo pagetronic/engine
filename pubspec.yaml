@@ -17,6 +17,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   encrypt: ^5.0.3
+  crypto: any
   yaml: any
   intl: any
   oauth2: any

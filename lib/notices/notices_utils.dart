@@ -1,5 +1,6 @@
 import 'package:engine/api/api.dart';
 import 'package:engine/utils/device/device.dart';
+import 'package:engine/utils/fx.dart';
 
 class NoticesUtils {
   static bool webPushCapable() {
@@ -20,6 +21,7 @@ class NoticesUtils {
     if (uuid == null) {
       return null;
     }
+    Fx.log(uuid);
     return (await getNotices(
       type: uuid,
       start: arguments['start'] as String?,

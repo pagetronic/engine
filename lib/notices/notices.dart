@@ -290,7 +290,7 @@ class FollowButton extends StatelessWidget {
 
   Future<bool> hasOsNotifications() async {
     try {
-      bool? hasWebPush = await NativeCall.systemMethodChannel.invokeMethod<bool?>("hasOsNotifications");
+      bool? hasWebPush = await MethodsCaller.native.invokeMethod<bool?>("hasOsNotifications");
       return hasWebPush ?? false;
     } catch (_) {
       return false;

@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:crypto/crypto.dart' as crypto;
 import 'package:engine/data/states.dart';
 import 'package:engine/data/store.dart';
 import 'package:engine/socket/channels.dart';
 import 'package:engine/utils/colors.dart';
+import 'package:engine/utils/fx.dart';
 import 'package:flutter/widgets.dart';
-
-import '../../utils/fx.dart';
 
 class Json implements Indexable {
   final Map<String, dynamic> data = {};
@@ -182,6 +182,10 @@ class Json implements Indexable {
   @override
   set parent(String? parent) {
     this['parent'] = parent;
+  }
+
+  String get md5 {
+    return crypto.md5.convert(utf8.encode(encode())).toString();
   }
 }
 
