@@ -10,7 +10,7 @@ class Device {
     if (_uuid != null || UsersStore.user == null) {
       return _uuid;
     }
-    Json? rez = await Api.post("/profile", Json({'action': 'uuid', 'device': await getDeviceInfos()}));
+    Json? rez = await Api.post("/profile", Json({'action': 'device', 'device': await getDeviceInfos()}));
     if (rez != null) {
       _uuid = rez['uuid'];
     }
