@@ -110,7 +110,7 @@ class GlobalInit {
 
     await UsersStore.init();
 
-    if (UsersStore.user == null) {
+    if (UsersStore.user != null) {
       await Store.init();
     }
 
@@ -129,7 +129,7 @@ class GlobalInit {
 
     await UsersStore.init();
 
-    if (UsersStore.user == null) {
+    if (UsersStore.user != null) {
       await Store.init();
     }
 

@@ -1,6 +1,7 @@
 import 'package:engine/api/api.dart';
 import 'package:engine/data/settings.dart';
 import 'package:engine/profile/auth/users.dart';
+import 'package:engine/utils/fx.dart';
 import 'package:engine/utils/natives.dart';
 import 'package:flutter/foundation.dart';
 
@@ -13,11 +14,17 @@ class Device {
     }
     String? deviceId;
 
-    Json device = await getDeviceInfos();
+    Json? device = await getDeviceInfos();
     String? uuid = await SettingsStore.get(_key);
 
     if (uuid != null && !uuid.contains("/")) {
       uuid = null;
+    }
+
+    if (uuid != null && device == null) {
+      return uuid.split("/")[0];
+    } else if (device == null) {
+      return null;
     }
 
     if (uuid != null) {
@@ -45,17 +52,17 @@ class Device {
     return deviceId;
   }
 
-  static Future<Json> getDeviceInfos() async {
+  static Future<Json?> getDeviceInfos() async {
     if (kIsWeb) {
       return Json({'platform': 'web'});
     }
-    Json infos;
     try {
-      infos = Json.decode((await MethodsCaller.native.invokeMethod<String?>("getDeviceId")) ?? "");
-    } catch (_) {
-      infos = Json();
+      Json infos = Json.decode((await MethodsCaller.native.invokeMethod<String?>("getDeviceId")) ?? "");
+      infos['platform'] = defaultTargetPlatform.name;
+      Fx.log(infos.encode());
+      return infos;
+    } catch (e) {
+      return null;
     }
-    infos['platform'] = defaultTargetPlatform.name;
-    return infos;
   }
 }
