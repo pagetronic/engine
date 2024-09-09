@@ -116,4 +116,17 @@ class GlobalInit {
     MasterSocket.init();
     FilesCache.purge();
   }
+
+  static Future<void> nativeInit() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    SettingsStore.init();
+    await UsersStore.init();
+
+    if (UsersStore.user == null) {
+      await Store.init();
+    }
+
+    NativeCall.init();
+  }
 }

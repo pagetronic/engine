@@ -6,12 +6,11 @@ class NoticesUtils {
     return false;
   }
 
-  static Future<Json?> getNotices({String? start, String? type, String? uuid, String? paging}) async {
+  static Future<Json?> getNotices({String? start, String? type, String? paging}) async {
     return Api.get("/notices",
         parameters: {
           'start': start,
           'type': type,
-          'uuid': uuid,
         },
         paging: paging);
   }
@@ -22,10 +21,9 @@ class NoticesUtils {
       return null;
     }
     return (await getNotices(
-      type: 'os',
-      uuid: uuid,
+      type: uuid,
       start: arguments['start'] as String?,
-      paging: arguments['paging'] as String?,
+      paging: arguments['paging'] as String?
     ))
         ?.encode();
   }
