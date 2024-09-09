@@ -127,8 +127,13 @@ class NoticesViewState extends BaseRoute<NoticesView> {
       request: (paging) async {
         Json? rez = await Api.get("/notices", paging: paging);
         if (rez?.result != null && rez!.result.isNotEmpty) {
-          Api.post("/notices",
-              Json({'action': 'received', 'ids': rez.result.map((e) => e.id).toList(), 'device': await Device.uuid}));
+          Api.post(
+              "/notices",
+              Json({
+                'action': 'received',
+                'max': rez.result.first.date,
+                'min': rez.result.last.date
+              }));
         }
         return Result(rez);
       },
