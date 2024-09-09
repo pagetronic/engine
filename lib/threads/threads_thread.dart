@@ -85,6 +85,7 @@ mixin ThreadViewer<T extends StatefulWidget> on BaseRoute<T> {
         }
       },
       child: list = ApiListView(
+        padding: const EdgeInsets.only(top: 5),
         insertToBottom: true,
         noEmpty: true,
         noRefresh: true,
