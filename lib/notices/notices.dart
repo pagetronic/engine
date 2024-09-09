@@ -125,17 +125,7 @@ class NoticesViewState extends BaseRoute<NoticesView> {
   Widget getBody() {
     return ApiListView(
       request: (paging) async {
-        Json? rez = await Api.get("/notices", paging: paging);
-        if (rez?.result != null && rez!.result.isNotEmpty) {
-          Api.post(
-              "/notices",
-              Json({
-                'action': 'received',
-                'max': rez.result.first.date,
-                'min': rez.result.last.date
-              }));
-        }
-        return Result(rez);
+        return Result(await Api.get("/notices", paging: paging));
       },
       getView: (context, item, index) {
         return Padding(
@@ -275,15 +265,9 @@ class FollowButton extends StatelessWidget {
                                 )
                             ]).then(
                           (chosen) {
-                            register(chosen, deviceId).then(
-                              (_) {
-                                setState(
-                                  () {
-                                    type = chosen;
-                                  },
-                                );
-                              },
-                            );
+                            if (chosen != null) {
+                              register(chosen, deviceId).then((_) => setState(() => type = chosen));
+                            }
                           },
                         );
                       },
@@ -313,16 +297,14 @@ class FollowButton extends StatelessWidget {
   }
 
   Future<void> register(String? type, String? device) async {
-    if (type != null) {
-      await Api.post(
-          "/notices",
-          Json({
-            "action": 'subscribe',
-            'channel': channel,
-            'type': type,
-            'device': device,
-          }));
-    }
+    await Api.post(
+        "/notices",
+        Json({
+          "action": 'subscribe',
+          'channel': channel,
+          'type': type,
+          'device': device,
+        }));
   }
 
   Future<String?> control(Future<String?> device) async {

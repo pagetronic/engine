@@ -24,11 +24,11 @@ class Api {
         headers: await _getHeaders(session: session, anonymous: anonymous),
         body: data.encode(),
       );
-      if (!noXUser && session == null && !anonymous) {
-        await Users.updateXUser(response.headers);
-      }
       if (response.statusCode == 401) {
         return null;
+      }
+      if (response.statusCode == 200 && !noXUser && session == null && !anonymous) {
+        await Users.updateXUser(response.headers);
       }
       return Json.decode(response.body);
     } catch (_) {
@@ -74,11 +74,11 @@ class Api {
         Uri.parse(url),
         headers: await _getHeaders(session: session, anonymous: anonymous),
       );
-      if (session == null && !noXUser && !anonymous) {
-        await Users.updateXUser(response.headers);
-      }
       if (response.statusCode == 401) {
         return null;
+      }
+      if (response.statusCode == 200 && session == null && !noXUser && !anonymous) {
+        await Users.updateXUser(response.headers);
       }
       Json rez = Json.decode(response.body);
 
