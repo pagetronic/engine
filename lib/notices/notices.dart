@@ -9,13 +9,13 @@ import 'package:engine/utils/base.dart';
 import 'package:engine/utils/buttons.dart';
 import 'package:engine/utils/fx.dart';
 import 'package:engine/utils/lists/lists_api.dart';
+import 'package:engine/utils/natives.dart';
 import 'package:engine/utils/platform/action.dart';
 import 'package:engine/utils/routes.dart';
 import 'package:engine/utils/text.dart';
 import 'package:engine/utils/url/url.dart';
 import 'package:engine/utils/widgets/date.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 class NoticesButton extends StatefulWidget {
@@ -181,7 +181,6 @@ class NoticesViewState extends BaseRoute<NoticesView> {
 class FollowButton extends StatelessWidget {
   final Channel channel;
   final double? size;
-  static const osNotifications = MethodChannel('osNotifications');
 
   const FollowButton(this.channel, {super.key, this.size});
 
@@ -291,7 +290,7 @@ class FollowButton extends StatelessWidget {
 
   Future<bool> hasOsNotifications() async {
     try {
-      bool? hasWebPush = await osNotifications.invokeMethod<bool?>("hasOsNotifications");
+      bool? hasWebPush = await NativeCall.systemMethodChannel.invokeMethod<bool?>("hasOsNotifications");
       return hasWebPush ?? false;
     } catch (_) {
       return false;

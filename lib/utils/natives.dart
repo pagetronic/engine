@@ -1,19 +1,19 @@
 import 'package:engine/notices/notices_utils.dart';
-import 'package:engine/utils/fx.dart';
 import 'package:flutter/services.dart';
 
 class NativeCall {
-  static FunctionMethodChannel? systemMethodChannel;
+  static FunctionMethodChannel systemMethodChannel = _system();
 
-  static void system() {
-    systemMethodChannel = FunctionMethodChannel("system");
+  static FunctionMethodChannel _system() {
+    return FunctionMethodChannel("system");
   }
+
+  static void init() {}
 }
 
 class FunctionMethodChannel extends MethodChannel {
   FunctionMethodChannel(super.name) {
     setMethodCallHandler(nativeMethodCallHandler);
-    Fx.log("Load methodChannel : $name");
   }
 
   Future<dynamic> nativeMethodCallHandler(MethodCall methodCall) async {

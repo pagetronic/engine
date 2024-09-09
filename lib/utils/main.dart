@@ -10,6 +10,8 @@ import 'package:engine/socket/websocket.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'natives.dart';
+
 class Engine extends StatelessWidget {
   final Route Function(RouteSettings settings) routeMaker;
   final ColorScheme lightColorScheme;
@@ -101,6 +103,8 @@ class NavigationHistoryObserver extends NavigatorObserver {
 class GlobalInit {
   static Future<void> init(Color systemUIOverlay) async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    NativeCall.init();
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(systemNavigationBarColor: systemUIOverlay));
 
