@@ -6,7 +6,7 @@ import 'package:engine/utils/natives.dart';
 import 'package:flutter/foundation.dart';
 
 class Device {
-  static const String _key = "deviceId";
+  static const String _key = "device";
 
   static Future<String?> get uuid async {
     if (UsersStore.user == null) {
