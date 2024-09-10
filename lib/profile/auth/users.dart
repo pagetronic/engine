@@ -294,6 +294,7 @@ class UserSwitch extends PopupMenuItem<Function> {
                       onTap: UsersStore.user == user_
                           ? null
                           : () {
+                              BaseRoute.maybeOf(context)?.loading(true);
                               if (user_ is User) {
                                 UsersStore.setCurrentUser(user_);
                               } else {
