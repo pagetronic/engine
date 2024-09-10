@@ -6,7 +6,6 @@ import 'package:engine/data/states.dart';
 import 'package:engine/data/store.dart';
 import 'package:engine/socket/channels.dart';
 import 'package:engine/utils/colors.dart';
-import 'package:engine/utils/fx.dart';
 import 'package:flutter/widgets.dart';
 
 class Json implements Indexable {
@@ -100,7 +99,7 @@ class Json implements Indexable {
 
   dynamic _convertValue(dynamic value) {
     if (value is DateTime) {
-      return value.toJson();
+      return value.toIso8601String();
     } else if (value is Color) {
       return value.toHex();
     } else if (value is Channel) {
@@ -115,7 +114,7 @@ class Json implements Indexable {
   DateTime get dateNotNull => data['date'] != null ? DateTime.parse(data['date']) : DateTime.utc(0);
 
   @override
-  set date(DateTime? date) => data['date'] = date?.toJson();
+  set date(DateTime? date) => data['date'] = date?.toIso8601String();
 
   @override
   DateTime? get update => data['update'] != null ? DateTime.parse(data['update']) : null;
@@ -123,7 +122,7 @@ class Json implements Indexable {
   DateTime get updateNotNull => data['update'] != null ? DateTime.parse(data['update']) : DateTime.utc(0);
 
   @override
-  set update(DateTime? update) => data['update'] = update?.toJson();
+  set update(DateTime? update) => data['update'] = update?.toIso8601String();
 
   DateTime getDate(String key) {
     return data[key] != null ? DateTime.parse(data[key]) : DateTime.utc(0);
@@ -189,10 +188,6 @@ class Json implements Indexable {
   }
 }
 
-extension JsonDateTime on DateTime {
-  String toJson() => Fx.dateFormatIso.format(toUtc());
-}
-
 class ValueNotifierJson extends ValueNotifier<Json?> {
   ValueNotifierJson([super._value]);
 
@@ -208,7 +203,7 @@ class ValueNotifierJson extends ValueNotifier<Json?> {
   void operator []=(String key, dynamic value) {
     Json json = (this.value ?? Json()).clone();
     if (value is DateTime) {
-      json[key] = value.toJson();
+      json[key] = value.toIso8601String();
     } else if (value is Color) {
       json[key] = value.toHex();
     } else {

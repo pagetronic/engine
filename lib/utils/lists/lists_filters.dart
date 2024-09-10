@@ -1,4 +1,3 @@
-import 'package:engine/api/utils/json.dart';
 import 'package:engine/api/utils/range.dart';
 import 'package:engine/data/settings.dart';
 import 'package:engine/lng/language.dart';
@@ -81,8 +80,8 @@ class DateListFilterState extends State<DateListFilter> {
                             : initialDate.add(Duration(days: (500 * 365.25).toInt())),
                       ).then((value) {
                         widget.range.value = DateTimeRangeNullable(start: value, end: widget.range.value?.end);
-                        TempDataStore.put(
-                            "range", "${widget.range.value?.start?.toJson()}/${widget.range.value?.end?.toJson()}");
+                        TempDataStore.put("range",
+                            "${widget.range.value?.start?.toIso8601String()}/${widget.range.value?.end?.toIso8601String()}");
                         widget.onChange(widget.range.value);
                       });
                     },
@@ -110,8 +109,8 @@ class DateListFilterState extends State<DateListFilter> {
                         lastDate: initialDate.add(Duration(days: (500 * 365.25).toInt())),
                       ).then((value) {
                         widget.range.value = DateTimeRangeNullable(start: widget.range.value?.start, end: value);
-                        TempDataStore.put(
-                            "range", "${widget.range.value?.start?.toJson()}/${widget.range.value?.end?.toJson()}");
+                        TempDataStore.put("range",
+                            "${widget.range.value?.start?.toIso8601String()}/${widget.range.value?.end?.toIso8601String()}");
 
                         widget.onChange(widget.range.value);
                       });

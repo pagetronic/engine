@@ -6,11 +6,9 @@ import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
 class Fx {
-  static final DateFormat dateFormatIso = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS+0000");
-
   static void log(var obj, [bool debug = false]) {
     if (!debug || (debug && kDebugMode)) {
-      print("${dateFormatIso.format(DateTime.now())}: ${obj.toString()}");
+      print("${DateTime.now().toIso8601String()}: ${obj.toString()}");
     }
   }
 

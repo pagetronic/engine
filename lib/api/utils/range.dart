@@ -1,5 +1,4 @@
 import 'package:engine/api/utils/json.dart';
-import 'package:engine/utils/fx.dart';
 
 class DateTimeRangeNullable {
   DateTime? start;
@@ -9,7 +8,7 @@ class DateTimeRangeNullable {
 
   get query {
     return Uri.encodeComponent(
-        "${start != null ? Fx.dateFormatIso.format(start!) : ''}>${end != null ? Fx.dateFormatIso.format(end!) : ''}");
+        "${start != null ? start!.toIso8601String() : ''}>${end != null ? end!.toIso8601String() : ''}");
   }
 
   filter(Json obj) {
