@@ -35,6 +35,7 @@ abstract class BaseRoute<T extends StatefulWidget> extends State<T>
     }
     isLoaded = true;
     body = null;
+    loadingModal.setActive(false);
   }
 
   @override

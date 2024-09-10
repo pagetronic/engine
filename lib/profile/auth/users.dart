@@ -7,7 +7,6 @@ import 'package:engine/data/settings.dart';
 import 'package:engine/data/store.dart';
 import 'package:engine/profile/auth/crypt.dart';
 import 'package:engine/utils/base.dart';
-import 'package:engine/utils/defer.dart';
 import 'package:engine/utils/fx.dart';
 import 'package:engine/utils/lists/lists_utils.dart';
 import 'package:engine/utils/widgets/dialog.dart';
@@ -294,6 +293,7 @@ class UserSwitch extends PopupMenuItem<Function> {
                       onTap: UsersStore.user == user_
                           ? null
                           : () {
+                              BaseRoute.maybeOf(context)?.loading(true);
                               if (user_ is User) {
                                 UsersStore.setCurrentUser(user_);
                               } else {
@@ -367,7 +367,6 @@ class UserSwitch extends PopupMenuItem<Function> {
 
 class ValueNotifierUser implements ValueListenable<User?> {
   final List<VoidCallback> listeners = [];
-  final Deferrer deferrer = Deferrer(100);
   User? current;
 
   @override
@@ -376,9 +375,7 @@ class ValueNotifierUser implements ValueListenable<User?> {
   set value(User? newValue) {
     if (newValue?.identifier != current?.identifier) {
       current = newValue;
-      deferrer.defer(
-        () => notifyListeners(),
-      );
+      notifyListeners();
     }
   }
 
