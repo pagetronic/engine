@@ -1,12 +1,11 @@
 import 'dart:core';
 
 import 'package:engine/lng/language.dart';
-import 'package:engine/utils/defer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
-class Since extends StatefulWidget {
+class Since extends StatelessWidget {
   final DateTime? date;
   final String? isoString;
   final String Function(String since, String date)? locale;
@@ -15,7 +14,21 @@ class Since extends StatefulWidget {
   const Since({super.key, this.isoString, this.date, this.locale, this.style});
 
   @override
-  SinceState createState() => SinceState();
+  Widget build(BuildContext context) {
+    if (isoString == null && this.date == null) {
+      return const SizedBox.shrink();
+    }
+    DateTime date = this.date ?? DateTime.parse(isoString!);
+    return StreamBuilder(
+        stream: Stream.periodic(const Duration(minutes: 1)),
+        builder: (context, _) {
+          String text = Since.formatSince(context, date);
+          if (locale != null) {
+            text = locale!(text, DateFormat.yMMMMd(Language.of(context).localeName).format(date));
+          }
+          return Text(text, style: style, textAlign: TextAlign.left);
+        });
+  }
 
   static String formatSince(BuildContext context, DateTime date, {int level = 2}) {
     const double daysPerYear = 365.24225;
@@ -99,47 +112,5 @@ class Since extends StatefulWidget {
       since = sinces[0];
     }
     return locale.since(!past ? "future" : "past", since);
-  }
-}
-
-class SinceState extends State<Since> {
-  DateTime? date;
-
-  @override
-  Widget build(BuildContext context) {
-    if (widget.isoString == null && widget.date == null) {
-      return const SizedBox.shrink();
-    }
-    date = date ?? widget.date ?? DateTime.parse(widget.isoString!);
-    if (date == null) {
-      return const SizedBox.shrink();
-    }
-    String text = Since.formatSince(context, date!);
-    if (widget.locale != null) {
-      text = widget.locale!(text, DateFormat.yMMMMd(Language.of(context).localeName).format(date!));
-    }
-    return Text(text, style: widget.style, textAlign: TextAlign.left);
-  }
-
-  final Deferrer deferrer = Deferrer(1000);
-
-  void refresh() {
-    setState(() {
-      date = null;
-    });
-    deferrer.abort();
-    deferrer.defer(refresh);
-  }
-
-  @override
-  void initState() {
-    refresh();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    deferrer.abort();
-    super.dispose();
   }
 }
