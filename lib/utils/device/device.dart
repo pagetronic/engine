@@ -1,7 +1,6 @@
 import 'package:engine/api/api.dart';
 import 'package:engine/data/settings.dart';
 import 'package:engine/profile/auth/users.dart';
-import 'package:engine/utils/fx.dart';
 import 'package:engine/utils/natives.dart';
 import 'package:flutter/foundation.dart';
 
@@ -59,7 +58,6 @@ class Device {
     try {
       Json infos = Json.decode((await MethodsCaller.native.invokeMethod<String?>("getDeviceId")) ?? "");
       infos['platform'] = defaultTargetPlatform.name;
-      Fx.log(infos.encode());
       return infos;
     } catch (e) {
       return null;

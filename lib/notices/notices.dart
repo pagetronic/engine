@@ -8,7 +8,6 @@ import 'package:engine/socket/channels.dart';
 import 'package:engine/utils/base.dart';
 import 'package:engine/utils/buttons.dart';
 import 'package:engine/utils/device/device.dart';
-import 'package:engine/utils/fx.dart';
 import 'package:engine/utils/lists/lists_api.dart';
 import 'package:engine/utils/natives.dart';
 import 'package:engine/utils/platform/action.dart';
@@ -84,7 +83,6 @@ class NoticesButtonState extends State<NoticesButton> with ChannelFollowable {
       stream.listen((user) {
         if (user['action'] == "notices") {
           notices.value = user["notices"];
-          Fx.log(user["notices"]);
         }
       });
     });
