@@ -173,8 +173,7 @@ class NoticesViewState extends BaseRoute<NoticesView> {
                         "/notices",
                         Json({
                           "action": 'remove',
-                          'id': item.id,
-                          'grouper': item['grouper'],
+                          'id': item['channel'] ?? item.id,
                         })).then(
                       (_) {
                         list?.remove(item.id);
