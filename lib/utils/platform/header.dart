@@ -54,7 +54,7 @@ class StateHeader extends State<Header> {
     if ((widget.actionsMenu ?? []).isNotEmpty) {
       PopupMenuButton popupMenu = PopupMenuButton<Function>(
         itemBuilder: (BuildContext context) => [
-          if (UsersStore.allUsers.length > 1) UserSwitch(context),
+          if (UsersStore.user != null && UsersStore.allUsers.length > 1) UserSwitch(context),
           ...(widget.actionsMenu ?? []),
         ],
         onSelected: (Function func) {

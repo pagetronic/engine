@@ -239,7 +239,9 @@ class OthersUsers extends StatelessWidget {
                               if (ok) {
                                 reload();
                               } else {
-                                Messager.toast(context, Language.of(context).unknown_error);
+                                if (context.mounted) {
+                                  Messager.toast(context, Language.of(context).unknown_error);
+                                }
                               }
                             },
                           );

@@ -162,6 +162,7 @@ abstract class BaseRoute<T extends StatefulWidget> extends State<T>
 
   @override
   void initState() {
+    UsersStore.currentUser.addListener(reload);
     platformBase.setMethodCallHandler(nativeMethodCallHandler);
     MasterSocket.follow(Channel.simple("user")).then((stream) => stream.stream.listen((event) {
           if (event['action'] == 'logout') {
@@ -173,6 +174,7 @@ abstract class BaseRoute<T extends StatefulWidget> extends State<T>
 
   @override
   void dispose() {
+    UsersStore.currentUser.removeListener(reload);
     unfollowAll();
     super.dispose();
   }

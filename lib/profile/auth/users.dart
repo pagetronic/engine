@@ -7,6 +7,7 @@ import 'package:engine/data/settings.dart';
 import 'package:engine/data/store.dart';
 import 'package:engine/profile/auth/crypt.dart';
 import 'package:engine/utils/base.dart';
+import 'package:engine/utils/defer.dart';
 import 'package:engine/utils/fx.dart';
 import 'package:engine/utils/lists/lists_utils.dart';
 import 'package:engine/utils/widgets/dialog.dart';
@@ -58,7 +59,19 @@ class Users {
 
 class UsersStore {
   static final List<User> users = [];
-  static final ValueNotifier<User?> currentUser = ValueNotifier(null);
+
+  static final ValueNotifierUser currentUser = ValueNotifierUser();
+
+  static final ValueNotifierUser rootUser = ValueNotifierUser();
+
+  static User? get realUser => rootUser.value;
+
+  static void setUser(User? user) {
+    currentUser.value = user;
+    if (user == null || !user.data.containsKey("original")) {
+      rootUser.value = user?.clone();
+    }
+  }
 
   static List<dynamic> get allUsers {
     List<dynamic> users_ = [];
@@ -150,14 +163,14 @@ class UsersStore {
 
   static Future<void> setCurrentUser(User? user) async {
     if (currentUser.value != user) {
-      currentUser.value = user;
+      setUser(user);
       await Store.init();
     }
   }
 
   static Future<void> activateWeb({String? userId, bool init = false}) async {
     if (userId == null && !init) {
-      currentUser.value = null;
+      setUser(null);
       return;
     }
     User? user = users.firstWhereOrNull((element) => element.id == userId);
@@ -168,7 +181,7 @@ class UsersStore {
         users.add(user);
       }
     }
-    currentUser.value = user;
+    setUser(user);
   }
 
   static Future<bool> switchUser(String? id, [String? session]) async {
@@ -189,7 +202,7 @@ class UsersStore {
     user.data.clear();
     user.data.addAll(userData);
     currentUser.value = null;
-    currentUser.value = user;
+    setUser(user);
 
     await Store.init();
 
@@ -213,7 +226,7 @@ class UsersStore {
         user.data.addAll(userData);
       }
     }
-    currentUser.value = user;
+    setUser(user);
   }
 
   static Future<void> revokeSession() async {
@@ -234,6 +247,12 @@ class User {
   bool get isAdmin => data['admin'] ?? false;
 
   String get id => data.id!;
+
+  String identifier = const Uuid().v1();
+
+  User clone() {
+    return User(session, data.clone());
+  }
 }
 
 class UserSwitch extends PopupMenuItem<Function> {
@@ -243,9 +262,7 @@ class UserSwitch extends PopupMenuItem<Function> {
   Widget? get child => build();
 
   @override
-  Function get value => () {
-        switcher(context);
-      };
+  Function get value => () => switcher(context);
 
   const UserSwitch(this.context, {super.key, super.child, super.value});
 
@@ -345,5 +362,35 @@ class UserSwitch extends PopupMenuItem<Function> {
         );
       },
     );
+  }
+}
+
+class ValueNotifierUser implements ValueListenable<User?> {
+  final List<VoidCallback> listeners = [];
+  final Deferrer deferrer = Deferrer(100);
+  User? current;
+
+  @override
+  User? get value => current;
+
+  set value(User? newValue) {
+    if (newValue?.identifier != current?.identifier) {
+      current = newValue;
+      deferrer.defer(
+        () => notifyListeners(),
+      );
+    }
+  }
+
+  @override
+  void addListener(VoidCallback listener) => listeners.add(listener);
+
+  @override
+  void removeListener(VoidCallback listener) => listeners.remove(listener);
+
+  void notifyListeners() {
+    for (VoidCallback listener in listeners) {
+      listener.call();
+    }
   }
 }
