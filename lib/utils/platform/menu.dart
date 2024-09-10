@@ -1,7 +1,6 @@
 import 'package:engine/api/utils/json.dart';
 import 'package:engine/blobs/images.dart';
 import 'package:engine/profile/auth/users.dart';
-import 'package:engine/profile/avatar.dart';
 import 'package:flutter/material.dart';
 
 class GlobalMenu {
@@ -34,7 +33,12 @@ class GlobalMenu {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            UserSwitcher(),
+                            user['avatar'] != null
+                                ? ImageWidget.src(user['avatar'],
+                                    format: ImageFormat.png60x60,
+                                    errorBuilder: (context, error, stackTrace) =>
+                                        Icon(Icons.account_circle_outlined, size: format.size, color: Colors.white))
+                                : Icon(Icons.account_circle_outlined, size: format.size, color: Colors.white),
                             const SizedBox(width: 8),
                             Expanded(
                                 child: Column(

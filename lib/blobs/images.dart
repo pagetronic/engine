@@ -17,7 +17,7 @@ import 'package:intl/intl.dart';
 
 enum ImageFormat {
   png16x16(16, 16, 'png'),
-  png20(20, null, 'png'),
+  png20x20(20, 20, 'png'),
   png24(24, null, 'png'),
   png24x24(24, 24, 'png'),
   png32x32(32, 32, 'png'),

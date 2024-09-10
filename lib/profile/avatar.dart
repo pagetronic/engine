@@ -2,7 +2,6 @@ import 'package:engine/api/api.dart';
 import 'package:engine/blobs/images.dart';
 import 'package:engine/blobs/picker.dart';
 import 'package:engine/profile/auth/users.dart';
-import 'package:engine/utils/defer.dart';
 import 'package:flutter/material.dart';
 
 class UserAvatar extends StatelessWidget {
@@ -84,77 +83,6 @@ class Avatar extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class UserSwitcher extends StatelessWidget {
-  final ImageFormat format;
-  final Deferrer deferrer = Deferrer(700);
-
-  UserSwitcher({super.key, this.format = ImageFormat.png60x60});
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: UsersStore.currentUser,
-      builder: (context, value, child) {
-        if (UsersStore.user == null) {
-          return const SizedBox.shrink();
-        }
-
-        PageController controller = PageController(initialPage: 0, keepPage: false);
-        List<dynamic> allUsers = UsersStore.allUsers;
-        for (int i = 0; i < allUsers.length; i++) {
-          if (allUsers[i] == UsersStore.user) {
-            controller = PageController(initialPage: i, keepPage: false);
-            break;
-          }
-        }
-
-        Widget avatar(Json user) {
-          return user['avatar'] != null
-              ? ImageWidget.src(user['avatar'],
-                  format: ImageFormat.png60x60,
-                  errorBuilder: (context, error, stackTrace) =>
-                      Icon(Icons.account_circle_outlined, size: format.size, color: Colors.white))
-              : Icon(Icons.account_circle_outlined, size: format.size, color: Colors.white);
-        }
-
-        int length = allUsers.length;
-        if (length == 1) {
-          return avatar(UsersStore.user!.data);
-        }
-
-        return SizedBox(
-          width: format.size,
-          height: format.size,
-          child: PageView.builder(
-            itemCount: length,
-            scrollDirection: Axis.vertical,
-            pageSnapping: true,
-            onPageChanged: (index) {
-              deferrer.defer(
-                () {
-                  if (allUsers[index] is User) {
-                    UsersStore.setCurrentUser(allUsers[index]);
-                  } else {
-                    UsersStore.switchUser(allUsers[index].id);
-                  }
-                },
-              );
-            },
-            controller: controller,
-            itemBuilder: (context, index) {
-              if (index >= length) {
-                return null;
-              }
-              dynamic user_ = allUsers[index];
-              return avatar(user_ is User ? user_.data : user_);
-            },
-          ),
-        );
-      },
     );
   }
 }

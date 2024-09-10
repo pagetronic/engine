@@ -2,12 +2,16 @@ import 'dart:async';
 
 import 'package:engine/api/api.dart';
 import 'package:engine/api/network.dart';
+import 'package:engine/blobs/images.dart';
 import 'package:engine/data/settings.dart';
 import 'package:engine/data/store.dart';
 import 'package:engine/profile/auth/crypt.dart';
+import 'package:engine/utils/base.dart';
 import 'package:engine/utils/fx.dart';
+import 'package:engine/utils/lists/lists_utils.dart';
+import 'package:engine/utils/widgets/dialog.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class Users {
@@ -230,4 +234,108 @@ class User {
   bool get isAdmin => data['admin'] ?? false;
 
   String get id => data.id!;
+}
+
+class UserSwitch extends PopupMenuItem<Function> {
+  final BuildContext context;
+
+  @override
+  Widget? get child => build();
+
+  @override
+  Function get value => switcher;
+
+  const UserSwitch(this.context, {super.key, super.child, super.value});
+
+  @override
+  bool represents(Function? value) {
+    return this.value == value;
+  }
+
+  void switcher() {
+    DialogModal? modal = BaseRoute.maybeOf(context)?.dialogModal;
+    List<dynamic> allUsers = UsersStore.allUsers;
+    modal?.setModal(
+      Material(
+        child: Container(
+          constraints: const BoxConstraints(maxHeight: 500, maxWidth: 300),
+          child: ListView.builder(
+            itemBuilder: (context, index) {
+              if (index < 0 || index >= allUsers.length) {
+                return null;
+              }
+              dynamic user_ = allUsers[index];
+              Json user = user_ is User ? user_.data : user_;
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                decoration: StyleListView.getOddEvenBoxDecoration(index),
+                child: InkWell(
+                  onTap: UsersStore.user == user_
+                      ? null
+                      : () {
+                          if (user_ is User) {
+                            UsersStore.setCurrentUser(user_);
+                          } else {
+                            UsersStore.switchUser(user_.id);
+                          }
+                          modal.setModal(null);
+                        },
+                  child: Row(
+                    children: [
+                      user.data['avatar'] != null
+                          ? ImageWidget.src(user.data['avatar'],
+                              format: ImageFormat.png32x32,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(Icons.account_circle_outlined, size: 32, color: Colors.white))
+                          : const Icon(Icons.account_circle_outlined, size: 32, color: Colors.white),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              (user.data['name'] ?? ""),
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: UsersStore.user == user_ ? FontWeight.bold : null),
+                            ),
+                            Text(user.data['idn'] ?? user.data['id'] ?? "parent",
+                                overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12)),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget build() {
+    return ValueListenableBuilder(
+      valueListenable: UsersStore.currentUser,
+      builder: (context, user, child) {
+        return Row(
+          children: [
+            user?.data['avatar'] != null
+                ? ImageWidget.src(user?.data['avatar'],
+                    format: ImageFormat.png20x20,
+                    errorBuilder: (context, error, stackTrace) =>
+                        const Icon(Icons.account_circle_outlined, size: 20, color: Colors.white))
+                : const Icon(Icons.account_circle_outlined, size: 20, color: Colors.white),
+            const SizedBox(width: 5),
+            Expanded(
+                child: Text(
+              (user?.data['name'] ?? ""),
+              overflow: TextOverflow.ellipsis,
+            ))
+          ],
+        );
+      },
+    );
+  }
 }

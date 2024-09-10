@@ -1,5 +1,6 @@
 import 'package:engine/lng/language.dart';
 import 'package:engine/notices/notices.dart';
+import 'package:engine/profile/auth/users.dart';
 import 'package:engine/utils/platform/load.dart';
 import 'package:engine/utils/tabs.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,7 @@ class StateHeader extends State<Header> {
   Widget build(BuildContext context) {
     final List<Widget> actions = [];
     actions.addAll(widget.actionsButtons ?? []);
+
     if (widget.search != null) {
       actions.add(IconButton(
         onPressed: () => Navigator.of(context).pushNamed(widget.search!),
@@ -51,7 +53,10 @@ class StateHeader extends State<Header> {
 
     if ((widget.actionsMenu ?? []).isNotEmpty) {
       PopupMenuButton popupMenu = PopupMenuButton<Function>(
-        itemBuilder: (BuildContext context) => widget.actionsMenu ?? [],
+        itemBuilder: (BuildContext context) => [
+          if (UsersStore.allUsers.length > 1) UserSwitch(context),
+          ...(widget.actionsMenu ?? []),
+        ],
         onSelected: (Function func) {
           func();
         },

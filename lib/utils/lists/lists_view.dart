@@ -61,7 +61,7 @@ class ListViewItem extends StatelessWidget {
                           onTap: onTap,
                           child: Row(
                             children: [
-                              if (getIcon != null) ...[getIcon!(context, ImageFormat.png20), const SizedBox(width: 8)],
+                              if (getIcon != null) ...[getIcon!(context, ImageFormat.png20x20), const SizedBox(width: 8)],
                               Expanded(
                                 child: H4(title, softWrap: true),
                               ),
