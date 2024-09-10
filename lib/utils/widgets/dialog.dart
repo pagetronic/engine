@@ -16,6 +16,7 @@ class DialogModal extends StatelessWidget {
           return const SizedBox.shrink();
         }
         return Stack(
+          fit: StackFit.expand,
           children: [
             Listener(
               onPointerDown: (event) {
@@ -27,7 +28,12 @@ class DialogModal extends StatelessWidget {
               },
               child: ColoredBox(color: Theme.of(context).shadowColor.withOpacity(0.7), child: const SizedBox.expand()),
             ),
-            Center(child: Padding(padding: const EdgeInsets.all(20), child: modal)),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Center(
+                child: SingleChildScrollView(child: modal),
+              ),
+            ),
           ],
         );
       },

@@ -122,7 +122,6 @@ class GlobalInit {
   }
 
   static Future<void> nativeInit() async {
-
     WidgetsFlutterBinding.ensureInitialized();
 
     SettingsStore.init();

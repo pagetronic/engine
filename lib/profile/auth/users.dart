@@ -258,58 +258,60 @@ class UserSwitch extends PopupMenuItem<Function> {
     modal?.setModal(
       Material(
         child: Container(
-          constraints: const BoxConstraints(maxHeight: 500, maxWidth: 300),
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              if (index < 0 || index >= allUsers.length) {
-                return null;
-              }
-              dynamic user_ = allUsers[index];
-              Json user = user_ is User ? user_.data : user_;
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                decoration: StyleListView.getOddEvenBoxDecoration(index),
-                child: InkWell(
-                  onTap: UsersStore.user == user_
-                      ? null
-                      : () {
-                          if (user_ is User) {
-                            UsersStore.setCurrentUser(user_);
-                          } else {
-                            UsersStore.switchUser(user_.id);
-                          }
-                          modal.setModal(null);
-                        },
-                  child: Row(
-                    children: [
-                      user.data['avatar'] != null
-                          ? ImageWidget.src(user.data['avatar'],
-                              format: ImageFormat.png32x32,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  const Icon(Icons.account_circle_outlined, size: 32, color: Colors.white))
-                          : const Icon(Icons.account_circle_outlined, size: 32, color: Colors.white),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+          constraints: const BoxConstraints(maxWidth: 300),
+          child: Column(children: [
+            for (int index = 0; index < allUsers.length; index++)
+              Builder(
+                builder: (context) {
+                  dynamic user_ = allUsers[index];
+                  Json user = user_ is User ? user_.data : user_;
+                  return Container(
+                    decoration: StyleListView.getOddEvenBoxDecoration(index),
+                    child: InkWell(
+                      onTap: UsersStore.user == user_
+                          ? null
+                          : () {
+                              if (user_ is User) {
+                                UsersStore.setCurrentUser(user_);
+                              } else {
+                                UsersStore.switchUser(user_.id);
+                              }
+                              modal.setModal(null);
+                            },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        child: Row(
                           children: [
-                            Text(
-                              (user.data['name'] ?? ""),
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: UsersStore.user == user_ ? FontWeight.bold : null),
-                            ),
-                            Text(user.data['idn'] ?? user.data['id'] ?? "parent",
-                                overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12)),
+                            user.data['avatar'] != null
+                                ? ImageWidget.src(user.data['avatar'],
+                                    format: ImageFormat.png32x32,
+                                    errorBuilder: (context, error, stackTrace) =>
+                                        const Icon(Icons.account_circle_outlined, size: 32, color: Colors.white))
+                                : const Icon(Icons.account_circle_outlined, size: 32, color: Colors.white),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    (user.data['name'] ?? ""),
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 16, fontWeight: UsersStore.user == user_ ? FontWeight.bold : null),
+                                  ),
+                                  Text(user.data['idn'] ?? user.data['id'] ?? "parent",
+                                      overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12)),
+                                ],
+                              ),
+                            )
                           ],
                         ),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+          ]),
         ),
       ),
     );
