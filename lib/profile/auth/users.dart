@@ -243,7 +243,9 @@ class UserSwitch extends PopupMenuItem<Function> {
   Widget? get child => build();
 
   @override
-  Function get value => switcher;
+  Function get value => () {
+        switcher(context);
+      };
 
   const UserSwitch(this.context, {super.key, super.child, super.value});
 
@@ -252,9 +254,13 @@ class UserSwitch extends PopupMenuItem<Function> {
     return this.value == value;
   }
 
-  void switcher() {
-    DialogModal? modal = BaseRoute.maybeOf(context)?.dialogModal;
+  static void switcher(BuildContext context) {
     List<dynamic> allUsers = UsersStore.allUsers;
+    if (allUsers.isEmpty) {
+      return;
+    }
+    DialogModal? modal = BaseRoute.maybeOf(context)?.dialogModal;
+    allUsers.removeWhere((element) => element == UsersStore.user);
     modal?.setModal(
       Material(
         child: Container(

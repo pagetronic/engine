@@ -33,12 +33,15 @@ class GlobalMenu {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            user['avatar'] != null
-                                ? ImageWidget.src(user['avatar'],
-                                    format: ImageFormat.png60x60,
-                                    errorBuilder: (context, error, stackTrace) =>
-                                        Icon(Icons.account_circle_outlined, size: format.size, color: Colors.white))
-                                : Icon(Icons.account_circle_outlined, size: format.size, color: Colors.white),
+                            InkWell(
+                              onTap: () => UserSwitch.switcher(context),
+                              child: user['avatar'] != null
+                                  ? ImageWidget.src(user['avatar'],
+                                      format: ImageFormat.png60x60,
+                                      errorBuilder: (context, error, stackTrace) =>
+                                          Icon(Icons.account_circle_outlined, size: format.size, color: Colors.white))
+                                  : Icon(Icons.account_circle_outlined, size: format.size, color: Colors.white),
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                                 child: Column(
