@@ -100,7 +100,7 @@ class MasterSocket {
 
       socket.stream.listen(
         (dynamic data_) {
-          if (data_ == "PLEASE_LOGIN") {
+          if (data_.contains("PLEASE_LOGIN")) {
             UsersStore.revokeSession();
             return;
           }
@@ -119,7 +119,7 @@ class MasterSocket {
         onError: (e) {
           //Fx.log("Socket error");
           _socket = null;
-          Future.delayed(const Duration(seconds: 10), init);
+          Future.delayed(const Duration(seconds: 5), init);
         },
       );
     });
