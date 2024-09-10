@@ -276,6 +276,8 @@
   "notifications_off": "Désactiver la notification",
   "notifications_app": "Notification dans l'application",
   "notifications_os": "Notification sur l'appareil",
+  "notifications_delete": "Supprimer",
+  "notifications_disable_channel": "Désactiver ce type",
   "gallery": "Galerie",
   "gallery_image": "Image",
   "gallery_choose": "Choisir une photo",

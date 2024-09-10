@@ -9,6 +9,7 @@ class ButtonIcon extends StatelessWidget {
   final double? size;
   final double defaultSize = 18;
   final double? opacity;
+  final EdgeInsets? padding;
 
   ButtonIcon({
     super.key,
@@ -18,6 +19,7 @@ class ButtonIcon extends StatelessWidget {
     this.text,
     this.size,
     this.opacity,
+    this.padding,
   });
 
   @override
@@ -27,7 +29,7 @@ class ButtonIcon extends StatelessWidget {
       onTapDown: onTapDown,
       onHover: (value) => hover.value = value,
       child: Padding(
-        padding: const EdgeInsets.all(5),
+        padding: padding ?? const EdgeInsets.all(5),
         child: ValueListenableBuilder(
           valueListenable: hover,
           builder: (context, hover, child) => AnimatedOpacity(

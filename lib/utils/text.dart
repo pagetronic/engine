@@ -54,6 +54,17 @@ class H6 extends Head {
   }
 }
 
+class Big extends Head {
+  final double fontSize;
+
+  const Big(super.text, {super.key, super.color, this.fontSize = 30});
+
+  @override
+  TextStyle? getTextStyle(BuildContext context) {
+    return TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold);
+  }
+}
+
 class HR extends StatelessWidget {
   final double height;
 

@@ -121,42 +121,89 @@ class NoticesViewState extends BaseRoute<NoticesView> {
 
   @override
   Widget getBody() {
-    return ApiListView(
+    List<String> unsubscribe = [];
+    ApiListView? list;
+    return list = ApiListView(
       request: (paging) async {
         return Result(await Api.get("/notices", paging: paging));
       },
       getView: (context, item, index) {
-        return Padding(
-          padding: const EdgeInsets.all(10),
-          child: InkWell(
-            onTap: item['url'] == null
-                ? null
-                : () {
-                    if (item['url'].startsWith("http")) {
-                      UrlOpener.open(item['url']);
-                    } else {
-                      Navigator.of(context).pushNamed(item['url']);
-                    }
-                  },
-            child: Opacity(
-              opacity: (item['read'] ?? false) ? 0.5 : 1,
-              child: Row(
-                children: [
-                  if (item['icon'] != null) ImageWidget.src(item['icon'], format: ImageFormat.png32x32),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        H4(item['title'] ?? ''),
-                        Since(isoString: item['date']),
-                        Text(item['message'] ?? ''),
-                      ],
-                    ),
+        return Column(
+          children: [
+            InkWell(
+              onTap: item['url'] == null
+                  ? null
+                  : () {
+                      if (item['url'].startsWith("http")) {
+                        UrlOpener.open(item['url']);
+                      } else {
+                        Navigator.of(context).pushNamed(item['url']);
+                      }
+                    },
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Opacity(
+                  opacity: (item['read'] ?? false) ? 0.5 : 1,
+                  child: Row(
+                    children: [
+                      if (item['icon'] != null) ImageWidget.src(item['icon'], format: ImageFormat.png32x32),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            H4(item['title'] ?? ''),
+                            Since(isoString: item['date']),
+                            Text(item['message'] ?? ''),
+                          ],
+                        ),
+                      ),
+                      if (item['count'] != null) Big("${item['count']}", fontSize: 25),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
+            Row(
+              children: [
+                ButtonIcon(
+                  icon: Icons.delete_forever_outlined,
+                  text: Language.of(context).notifications_delete,
+                  onPressed: () {
+                    Api.post(
+                        "/notices",
+                        Json({
+                          "action": 'remove',
+                          'id': item.id,
+                          'grouper': item['grouper'],
+                        })).then(
+                      (_) {
+                        list?.remove(item.id);
+                      },
+                    );
+                  },
+                ),
+                if (item['follow'] && !unsubscribe.contains(item['channel']))
+                  ButtonIcon(
+                    onPressed: () {
+                      Api.post(
+                          "/notices",
+                          Json({
+                            "action": 'subscribe',
+                            'channel': item['channel'],
+                            'type': "off",
+                          })).then(
+                        (_) {
+                          unsubscribe.add(item['channel']);
+                          list?.update(item);
+                        },
+                      );
+                    },
+                    icon: Icons.not_interested,
+                    text: Language.of(context).notifications_disable_channel,
+                  )
+              ],
+            )
+          ],
         );
       },
     );

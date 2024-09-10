@@ -15,9 +15,7 @@ class Since extends StatefulWidget {
   const Since({super.key, this.isoString, this.date, this.locale, this.style});
 
   @override
-  State<StatefulWidget> createState() {
-    return SinceState();
-  }
+  SinceState createState() => SinceState();
 
   static String formatSince(BuildContext context, DateTime date, {int level = 2}) {
     const double daysPerYear = 365.24225;
