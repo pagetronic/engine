@@ -11,6 +11,7 @@ import 'package:engine/utils/routes.dart';
 import 'package:engine/utils/text.dart';
 import 'package:engine/utils/web/web.dart';
 import 'package:engine/utils/widgets/date.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -90,7 +91,7 @@ mixin ProfileViewBase<T extends StatefulWidget> on BaseRoute<T> {
     );
   }
 
-  Future<void> change() async => UsersStore.activate(null);
+  Future<void> change() async => kIsWeb ? UsersStore.activateWeb(userId: null) : UsersStore.activate(null);
 
   @override
   List<GlobalMenuItem>? getMenu() => getBaseMenu('profile');
