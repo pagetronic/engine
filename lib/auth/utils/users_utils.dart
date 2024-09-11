@@ -2,6 +2,7 @@ import 'package:engine/api/api.dart';
 import 'package:engine/auth/users.dart';
 import 'package:engine/lng/language.dart';
 import 'package:engine/utils/routes.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class UserBuilder extends StatelessWidget {
@@ -54,5 +55,33 @@ class UserLoginOrWidget extends StatelessWidget {
         return child;
       },
     );
+  }
+}
+
+
+class ValueNotifierUser implements ValueListenable<User?> {
+  final List<VoidCallback> listeners = [];
+  User? current;
+
+  @override
+  User? get value => current;
+
+  set value(User? newValue) {
+    if (newValue?.identifier != current?.identifier) {
+      current = newValue;
+      notifyListeners();
+    }
+  }
+
+  @override
+  void addListener(VoidCallback listener) => listeners.add(listener);
+
+  @override
+  void removeListener(VoidCallback listener) => listeners.remove(listener);
+
+  void notifyListeners() {
+    for (VoidCallback listener in listeners) {
+      listener.call();
+    }
   }
 }

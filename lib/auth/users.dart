@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:engine/api/api.dart';
 import 'package:engine/api/network.dart';
-import 'package:engine/auth/crypt.dart';
+import 'package:engine/auth/utils/crypt.dart';
+import 'package:engine/auth/utils/users_utils.dart';
 import 'package:engine/blobs/images.dart';
 import 'package:engine/data/settings.dart';
 import 'package:engine/data/store.dart';
@@ -362,32 +363,5 @@ class UserSwitch extends PopupMenuItem<Function> {
         );
       },
     );
-  }
-}
-
-class ValueNotifierUser implements ValueListenable<User?> {
-  final List<VoidCallback> listeners = [];
-  User? current;
-
-  @override
-  User? get value => current;
-
-  set value(User? newValue) {
-    if (newValue?.identifier != current?.identifier) {
-      current = newValue;
-      notifyListeners();
-    }
-  }
-
-  @override
-  void addListener(VoidCallback listener) => listeners.add(listener);
-
-  @override
-  void removeListener(VoidCallback listener) => listeners.remove(listener);
-
-  void notifyListeners() {
-    for (VoidCallback listener in listeners) {
-      listener.call();
-    }
   }
 }

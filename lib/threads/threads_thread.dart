@@ -4,7 +4,7 @@ import 'package:engine/api/api.dart';
 import 'package:engine/api/html/html.dart';
 import 'package:engine/api/utils/html.dart';
 import 'package:engine/auth/users.dart';
-import 'package:engine/auth/users_utils.dart';
+import 'package:engine/auth/utils/users_utils.dart';
 import 'package:engine/lng/language.dart';
 import 'package:engine/pages/pages_chooser.dart';
 import 'package:engine/socket/channels.dart';

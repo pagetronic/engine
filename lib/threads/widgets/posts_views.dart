@@ -1,7 +1,7 @@
 import 'package:engine/api/api.dart';
 import 'package:engine/auth/profile/avatar.dart';
 import 'package:engine/auth/users.dart';
-import 'package:engine/auth/users_utils.dart';
+import 'package:engine/auth/utils/users_utils.dart';
 import 'package:engine/blobs/images.dart';
 import 'package:engine/lng/language.dart';
 import 'package:engine/notices/notices.dart';
