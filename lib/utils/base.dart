@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:engine/api/stats/stats.dart';
+import 'package:engine/auth/users.dart';
 import 'package:engine/lng/language.dart';
-import 'package:engine/profile/auth/users.dart';
 import 'package:engine/socket/websocket.dart';
 import 'package:engine/utils/loading.dart';
 import 'package:engine/utils/platform/load.dart';

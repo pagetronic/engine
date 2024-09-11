@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:engine/api/utils/json.dart';
-import 'package:engine/profile/auth/users.dart';
+import 'package:engine/auth/users.dart';
 import 'package:engine/socket/websocket.dart';
 import 'package:flutter/foundation.dart';
 

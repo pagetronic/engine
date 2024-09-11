@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:engine/api/api.dart';
+import 'package:engine/auth/users.dart';
 import 'package:engine/blobs/images.dart';
 import 'package:engine/lng/language.dart';
-import 'package:engine/profile/auth/users.dart';
 import 'package:engine/socket/channels.dart';
 import 'package:engine/utils/base.dart';
 import 'package:engine/utils/buttons.dart';

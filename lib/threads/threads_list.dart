@@ -1,6 +1,6 @@
 import 'package:engine/api/api.dart';
+import 'package:engine/auth/users.dart';
 import 'package:engine/lng/language.dart';
-import 'package:engine/profile/auth/users.dart';
 import 'package:engine/threads/widgets/posts_inputs.dart';
 import 'package:engine/threads/widgets/posts_views.dart';
 import 'package:engine/utils/fx.dart';

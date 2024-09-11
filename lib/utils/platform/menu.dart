@@ -1,6 +1,6 @@
 import 'package:engine/api/utils/json.dart';
+import 'package:engine/auth/users.dart';
 import 'package:engine/blobs/images.dart';
-import 'package:engine/profile/auth/users.dart';
 import 'package:flutter/material.dart';
 
 class GlobalMenu {

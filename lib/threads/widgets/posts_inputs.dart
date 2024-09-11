@@ -1,9 +1,9 @@
 import 'package:engine/admin/ai/ai.dart';
 import 'package:engine/admin/ai/questions.dart';
 import 'package:engine/api/api.dart';
+import 'package:engine/auth/users.dart';
 import 'package:engine/blobs/picker.dart';
 import 'package:engine/lng/language.dart';
-import 'package:engine/profile/auth/users.dart';
 import 'package:engine/threads/widgets/posts_images.dart';
 import 'package:engine/utils/base.dart';
 import 'package:engine/utils/lists/lists_utils.dart';

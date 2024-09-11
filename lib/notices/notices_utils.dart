@@ -1,5 +1,5 @@
 import 'package:engine/api/api.dart';
-import 'package:engine/profile/auth/users.dart';
+import 'package:engine/auth/users.dart';
 import 'package:engine/utils/device/device.dart';
 
 class NoticesUtils {

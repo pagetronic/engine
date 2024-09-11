@@ -1,10 +1,10 @@
 import 'package:engine/api/api.dart';
+import 'package:engine/auth/profile/avatar.dart';
+import 'package:engine/auth/users.dart';
+import 'package:engine/auth/users_utils.dart';
 import 'package:engine/blobs/images.dart';
 import 'package:engine/lng/language.dart';
 import 'package:engine/notices/notices.dart';
-import 'package:engine/profile/auth/users.dart';
-import 'package:engine/profile/auth/users_utils.dart';
-import 'package:engine/profile/avatar.dart';
 import 'package:engine/socket/channels.dart';
 import 'package:engine/threads/utils/threads_utils.dart';
 import 'package:engine/threads/widgets/posts_images.dart';

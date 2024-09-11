@@ -1,6 +1,6 @@
 import 'package:engine/api/api.dart';
+import 'package:engine/auth/users.dart';
 import 'package:engine/data/settings.dart';
-import 'package:engine/profile/auth/users.dart';
 import 'package:engine/utils/natives.dart';
 import 'package:flutter/foundation.dart';
 

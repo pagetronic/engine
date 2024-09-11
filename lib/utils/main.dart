@@ -1,11 +1,11 @@
 import 'dart:ui';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:engine/auth/users.dart';
 import 'package:engine/data/files.dart';
 import 'package:engine/data/settings.dart';
 import 'package:engine/data/store.dart';
 import 'package:engine/lng/language.dart';
-import 'package:engine/profile/auth/users.dart';
 import 'package:engine/socket/websocket.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

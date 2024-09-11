@@ -1,9 +1,9 @@
 import 'package:engine/api/api.dart';
+import 'package:engine/auth/auth_view.dart';
+import 'package:engine/auth/profile/avatar.dart';
+import 'package:engine/auth/users.dart';
 import 'package:engine/blobs/images.dart';
 import 'package:engine/lng/language.dart';
-import 'package:engine/profile/auth/auth_view.dart';
-import 'package:engine/profile/auth/users.dart';
-import 'package:engine/profile/avatar.dart';
 import 'package:engine/utils/base.dart';
 import 'package:engine/utils/platform/menu.dart';
 import 'package:engine/utils/platform/views.dart';

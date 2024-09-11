@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:engine/api/utils/json.dart';
 import 'package:engine/api/utils/settings.dart';
-import 'package:engine/profile/auth/users.dart';
+import 'package:engine/auth/users.dart';
 import 'package:engine/socket/channels.dart';
 import 'package:engine/socket/utils/socket.dart';
 import 'package:engine/utils/fx.dart';
