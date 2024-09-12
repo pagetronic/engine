@@ -16,14 +16,20 @@ class MasterSocket {
   static final Map<String, ChannelStreamController> channels = {};
   static String? userId = Users.id;
 
+  static Future<WebSocketChannel?>? getSocket() => _socket;
+
   static Future<WebSocketChannel?> init() async {
     try {
       if (_socket == null || (await _socket!)?.closeCode != null) {
         _socket = registerSocket();
+        for (String channel in channels.keys) {
+          (await _socket)?.sink.add(Json({"action": "follow", "channel": channel}).encode());
+        }
       }
       return await _socket;
     } catch (e) {
       Fx.log("Socket init error");
+      Future.delayed(const Duration(seconds: 5), init);
       return null;
     }
   }
@@ -94,11 +100,20 @@ class MasterSocket {
       return socket;
     }).then((WebSocketChannel? socket) {
       if (socket == null) {
+        Future.delayed(const Duration(seconds: 5), init);
         Fx.log("Socket connection error");
         return;
       }
 
-      socket.stream.listen(
+      socket.stream.handleError((_) {
+        Future.delayed(const Duration(milliseconds: 300), () async {
+          try {
+            await socket.sink.close(500);
+          } catch (_) {}
+          _socket = null;
+          Future.delayed(const Duration(seconds: 5), init);
+        });
+      }).listen(
         (dynamic data_) {
           if (data_.contains("PLEASE_LOGIN")) {
             UsersStore.revokeSession();
@@ -114,7 +129,7 @@ class MasterSocket {
         onDone: () {
           //Fx.log("Socket done");
           _socket = null;
-          Future.delayed(const Duration(seconds: 10), init);
+          Future.delayed(const Duration(seconds: 5), init);
         },
         onError: (e) {
           //Fx.log("Socket error");
@@ -160,7 +175,7 @@ class ChannelStreamController {
   StreamController<Json> startStream() {
     StreamController<Json> controller = StreamController<Json>();
     if (controllers.isEmpty) {
-      MasterSocket.init().then(
+      MasterSocket.getSocket()?.then(
         (socket) {
           socket?.sink.add(Json({"action": "follow", "channel": channel}).encode());
         },
