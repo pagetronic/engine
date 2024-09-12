@@ -58,7 +58,6 @@ class UserLoginOrWidget extends StatelessWidget {
   }
 }
 
-
 class ValueNotifierUser implements ValueListenable<User?> {
   final List<VoidCallback> listeners = [];
   User? current;

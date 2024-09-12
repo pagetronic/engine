@@ -1,4 +1,4 @@
-import 'package:engine/notices/notices_utils.dart';
+import 'package:engine/notices/notices.dart';
 import 'package:flutter/services.dart';
 
 class MethodsCaller {
@@ -11,6 +11,8 @@ class MethodsCaller {
         switch (methodCall.method) {
           case "getNotices":
             return await NoticesUtils.getNativeNotices(methodCall.arguments);
+          case "readNotices":
+            await NoticesUtils.read(methodCall.arguments);
 
           default:
         }
